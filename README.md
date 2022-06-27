@@ -14,5 +14,7 @@
 
 
 ***
-Timothy P. Lillicrap, Daniel Cownden, Douglas B. Tweed, Colin J. Akerman. Random feedback weights support learning in deep neural networks arXiv:1411.0247v1 [q-bio.NC], 2014.
++ 해당 프로젝트는 Timothy P. Lillicrap 외 3인의 「Random feedback weights support learning in deep neural networks」(2014)을 바탕으로 하고 있습니다.
+
+> Timothy P. Lillicrap, Daniel Cownden, Douglas B. Tweed, Colin J. Akerman. Random feedback weights support learning in deep neural networks. ArXiv, 1411.0247v1, 2014.
 ***
