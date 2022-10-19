@@ -93,7 +93,7 @@ class MSE(LossFunction):
 
 
 if __name__ == '__main__':
-    faLayer = BPLayer(input_shape=2, units=1)
+    faLayer = BPLayer(input_shape=2, units=2)
     sigmoid = Sigmoid()
     loss_func = MSE()
 
@@ -101,7 +101,7 @@ if __name__ == '__main__':
     print('b: ', faLayer.b, end='\n\n')
 
     x = [[0, 0], [0, 1], [1, 0], [1, 1]]
-    y = [[0], [1], [1], [1]]
+    y = [[0, 0], [1, 1], [1, 1], [1, 1]]
 
     print('x: ', x, end='\n\n')
     print('y: ', y, end='\n\n')
