@@ -34,8 +34,13 @@ class BPLayer(Layer):
         return h
 
     def backProb(self, dy):
-        db = dy
         dx = np.dot(dy, self.W.T)
+
+        #<Affine Method>
+        db = dy.sum(axis=0)
+        xT = np.transpose(self._rec_x)
+        dW = np.dot(xT, dy)
+        return dx, dW, db
 
         #<Personal Method>
         '''
@@ -43,12 +48,8 @@ class BPLayer(Layer):
         배치 별 가중치 미분 값을 합하여 출력한다.
         『Personal Methd』의 경우 배치에 따른 가중치를 그대로 출력한다.
         '''
+        db = dy
         dW = np.multiply(dy, self._rec_x)
-        return dx, dW, db
-
-        #<Affine Method>
-        xT = np.transpose(self._rec_x)
-        dW = np.dot(xT, dy)
         return dx, dW, db
 
 class Sigmoid(Layer):
