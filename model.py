@@ -1,4 +1,4 @@
-import layer
+import ann.layer as layer
 
 if __name__ == '__main__':
     faLayer = layer.BPLayer(input_shape=2, units=1)
