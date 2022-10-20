@@ -31,7 +31,7 @@ if __name__ == '__main__':
     out = layers.Sigmoid()(out)
 
     model = Model(inputs=inputs, outputs=out)
-    out = model.predict(x=[[0, 0], [0, 1]])
+    out = model.predict(x=[[0, 0], [0, 1], [1, 0]])
 
     print('out: ', out)
     exit()
