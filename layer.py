@@ -1,7 +1,7 @@
 from abc import abstractmethod, ABCMeta
 import numpy as np
 
-class Layer(metaclass=ABCMeta):
+class LayerFrame(metaclass=ABCMeta):
     @abstractmethod
     def forwardProp(self, x):
         pass
@@ -10,7 +10,7 @@ class Layer(metaclass=ABCMeta):
     def backProb(self, dy):
         pass
 
-class LossFunction(metaclass=ABCMeta):
+class LossFunctionFrame(metaclass=ABCMeta):
     @abstractmethod
     def forwardProp(self, y_hat, y):
         pass
@@ -19,7 +19,7 @@ class LossFunction(metaclass=ABCMeta):
     def backProb(self):
         pass
 
-class BPLayer(Layer):
+class BPLayer(LayerFrame):
     def __init__(self, input_shape, units):
         self.W = np.random.rand(input_shape, units)
         self.b = np.random.rand(units)
@@ -52,7 +52,7 @@ class BPLayer(Layer):
         dW = np.multiply(dy, self._rec_x)
         return dx, dW, db
 
-class Sigmoid(Layer):
+class Sigmoid(LayerFrame):
     def __init__(self):
         self._rec_o = None
 
@@ -66,7 +66,7 @@ class Sigmoid(Layer):
         do = self._rec_o * (1 - self._rec_o)
         return dy * do
 
-class MSE(LossFunction):
+class MSE(LossFunctionFrame):
     def __init__(self):
         self._rec_err = None
 
@@ -93,7 +93,7 @@ class MSE(LossFunction):
 
 
 if __name__ == '__main__':
-    faLayer = BPLayer(input_shape=2, units=2)
+    faLayer = BPLayer(input_shape=2, units=1)
     sigmoid = Sigmoid()
     loss_func = MSE()
 
@@ -101,7 +101,7 @@ if __name__ == '__main__':
     print('b: ', faLayer.b, end='\n\n')
 
     x = [[0, 0], [0, 1], [1, 0], [1, 1]]
-    y = [[0, 0], [1, 1], [1, 1], [1, 1]]
+    y = [[0], [1], [1], [1]]
 
     print('x: ', x, end='\n\n')
     print('y: ', y, end='\n\n')
