@@ -1,7 +1,15 @@
 from abc import abstractmethod, ABCMeta
+
 import numpy as np
 
 class LayerFrame(metaclass=ABCMeta):
+    def __init__(self):
+        self.childLayer = None
+
+    def __call__(self, layer):
+        layer.childLayer = self
+        return self
+    
     @abstractmethod
     def forwardProp(self, x):
         pass
@@ -12,6 +20,7 @@ class LayerFrame(metaclass=ABCMeta):
 
 class LossFunctionFrame(metaclass=ABCMeta):
     @abstractmethod
+
     def forwardProp(self, y_hat, y):
         pass
 
@@ -19,12 +28,27 @@ class LossFunctionFrame(metaclass=ABCMeta):
     def backProb(self):
         pass
 
+class InputLayer(LayerFrame):
+    def __init__(self, shape):
+        super().__init__()
+        self.input_shape = tuple(shape)
+    
+    def forwardProp(self, x):
+        x_shape = np.shape(x)[1:] #배치 차원 제외
+        if x_shape != self.input_shape:
+            raise
+        return x
+
+    def backProb(self, dy):
+        return dy
+
 class BPLayer(LayerFrame):
     def __init__(self, input_shape, units):
+        super().__init__()
+        self._rec_x = None
+
         self.W = np.random.rand(input_shape, units)
         self.b = np.random.rand(units)
-
-        self._rec_x = None
 
     def forwardProp(self, x):
         xW = np.matmul(x, self.W)
@@ -54,6 +78,7 @@ class BPLayer(LayerFrame):
 
 class Sigmoid(LayerFrame):
     def __init__(self):
+        super().__init__()
         self._rec_o = None
 
     def forwardProp(self, x):
