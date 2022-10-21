@@ -46,8 +46,15 @@ class BPLayer(LayerFrame):
 
         self.__rec_x = None
 
-        self.W = np.random.rand(input_shape, units)
-        self.b = np.random.rand(units)
+        #Xavier: sigmoid
+        self.W = np.random.randn(input_shape, units) / np.sqrt(1. / units)
+        #He: relu
+        self.W = np.random.randn(input_shape, units) * np.sqrt(2. / units)
+
+        #Random
+        self.W = np.random.randn(input_shape, units)
+
+        self.b = np.zeros(units)
 
         self.dW = None
         self.db = None
@@ -92,4 +99,18 @@ class Sigmoid(LayerFrame):
 
     def backProb(self, dy):
         do = self.__rec_o * (1 - self.__rec_o)
+        return dy * do
+
+class ReLU(LayerFrame):
+    def __init__(self):
+        super().__init__()
+
+        self.__rec_x = None
+
+    def forwardProp(self, x):
+        self.__rec_x = x
+        return np.maximum(0., x)
+
+    def backProb(self, dy):
+        do = (self.__rec_x > 0.) * 1.
         return dy * do

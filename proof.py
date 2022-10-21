@@ -1,7 +1,7 @@
-import ann.layers as layers
-import ann.models as models
-import ann.lossFunctions as lossFunctions
-import ann.optimizers as optimizers
+from ann import layers
+from ann import models
+from ann import lossFunctions
+from ann import optimizers
 
 import numpy as np
 
@@ -9,7 +9,7 @@ if __name__ == '__main__':
     def get_model():
         inputs = layers.InputLayer(shape=(2, ))
         out = layers.BPLayer(input_shape=2, units=2)(inputs)
-        out = layers.Sigmoid()(out)
+        out = layers.ReLU()(out)
 
         out = layers.BPLayer(input_shape=2, units=1)(out)
         out = layers.Sigmoid()(out)
@@ -18,14 +18,14 @@ if __name__ == '__main__':
         return model
 
     model = get_model() 
-    model.optimizer = optimizers.SGD(learning_rate=0.1)
+    model.optimizer = optimizers.SGD(learning_rate=0.005)
 
     lossFunction = lossFunctions.MSE()
 
     x = [[0, 0], [0, 1], [1, 0], [1, 1]]
     y = [[0], [1], [1], [0]]
 
-    for _ in range(20000):
+    for _ in range(30000):
         y_hat = model.predict(x)
         loss = lossFunction.forwardProp(y_hat=y_hat, y=y)
         print(loss)
