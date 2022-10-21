@@ -1,5 +1,6 @@
 from abc import abstractmethod, ABCMeta
 import ann.layers as layers
+import ann.lossFunction as lossFunc
 
 import numpy as np
 
@@ -8,30 +9,55 @@ class Model:
         self.input_layer = inputs
         self.output_layer = outputs
 
+        self.lossFunction = None
+
     def predict(self, x):
-        layers = self.input_layer
+        flow_layer = self.input_layer
         flow_data = x
-        while layers is not None:
-            flow_data = layers.forwardProp(x=flow_data)
-            layers = layers.childLayer
+        while flow_layer is not None:
+            flow_data = flow_layer.forwardProp(x=flow_data)
+            flow_layer = flow_layer.childLayer
         return flow_data
+
+    def train(self, x, y):
+        y_hat = self.predict(x)
+        loss = self.lossFunction.forwardProp(y_hat=y_hat, y=y)
+        
+        dLoss = self.lossFunction.backProb()
+        
+        flow_layer = self.output_layer
+        d_flow_data = dLoss
+        while flow_layer is not None:
+            d_flow_data = flow_layer.backProb(dy=d_flow_data)
+            print(flow_layer)
+            if flow_layer.have_weight():
+                print(flow_layer.dW)
+                print(flow_layer.db)
+            
+            flow_layer = flow_layer.parentLayer
+
+        
 
 
 
 if __name__ == '__main__':
     inputs = layers.InputLayer(shape=(2, ))
     out = layers.BPLayer(input_shape=2, units=1)(inputs)
-    print(out.W)
-    print(out.b)
     out = layers.Sigmoid()(out)
 
     out = layers.BPLayer(input_shape=1, units=1)(out)
-    print(out.W)
-    print(out.b)
     out = layers.Sigmoid()(out)
 
+
     model = Model(inputs=inputs, outputs=out)
-    out = model.predict(x=[[0, 0], [0, 1], [1, 0]])
+    model.lossFunction = lossFunc.MSE()
+
+    x = [[0, 0], [0, 1], [1, 0]]
+    y = [[0], [1], [1]]
+
+    model.train(x, y)
+
+    exit()
 
     print('out: ', out)
     exit()
