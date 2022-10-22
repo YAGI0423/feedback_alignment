@@ -1,4 +1,5 @@
 from abc import abstractmethod, ABCMeta
+from ann.weightInitializers import Inintializers
 
 import numpy as np
 
@@ -40,21 +41,15 @@ class InputLayer(LayerFrame):
         return dy
 
 class BPLayer(LayerFrame):
-    def __init__(self, input_shape, units):
+    def __init__(self, input_shape, units, weight_init=Inintializers.randomUniform):
         super().__init__()
         self._HAVE_WEIGHT = True
+        self.weight_initializer = weight_init
 
         self.__rec_x = None
 
-        #Xavier: sigmoid
-        self.W = np.random.randn(input_shape, units) / np.sqrt(1. / units)
-        #He: relu
-        self.W = np.random.randn(input_shape, units) * np.sqrt(2. / units)
-
-        #Random
-        self.W = np.random.randn(input_shape, units)
-
-        self.b = np.zeros(units)
+        self.W = self.weight_initializer(input_shape, units)
+        self.b = np.full((units, ), 0.01, dtype=np.float64)
 
         self.dW = None
         self.db = None
