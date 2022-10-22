@@ -5,12 +5,10 @@ from ann import lossFunctions
 from ann import optimizers
 
 if __name__ == '__main__':
+
     def get_model():
         inputs = layers.InputLayer(shape=(2, ))
-        out = layers.BPLayer(input_shape=2, units=2, weight_init=Inintializers.xavier)(inputs)
-        out = layers.Sigmoid()(out)
-
-        out = layers.BPLayer(input_shape=2, units=1, weight_init=Inintializers.xavier)(out)
+        out = layers.BPLayer(input_shape=2, units=1, weight_init=Inintializers.xavier)(inputs)
         out = layers.Sigmoid()(out)
 
         model = models.Model(inputs=inputs, outputs=out)
