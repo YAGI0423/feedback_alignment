@@ -13,11 +13,11 @@ class Model:
             flow_layer = flow_layer.childLayer
         return flow_data
 
-    def update_on_batch(self, x, dLoss):
+    def update_on_batch(self, dLoss):
         flow_layer = self.output_layer
         d_flow_data = dLoss
         while flow_layer is not None:
-            d_flow_data = flow_layer.backProb(dy=d_flow_data)
+            d_flow_data = flow_layer.backProp(dy=d_flow_data)
             if flow_layer.have_weight():
                 flow_layer.W = self.optimizer.optimize( #Weight update
                     parameter=flow_layer.W,

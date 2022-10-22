@@ -4,13 +4,11 @@ from ann import models
 from ann import lossFunctions
 from ann import optimizers
 
-import numpy as np
-
 if __name__ == '__main__':
     def get_model():
         inputs = layers.InputLayer(shape=(2, ))
-        out = layers.BPLayer(input_shape=2, units=2, weight_init=Inintializers.He)(inputs)
-        out = layers.ReLU()(out)
+        out = layers.BPLayer(input_shape=2, units=2, weight_init=Inintializers.xavier)(inputs)
+        out = layers.Sigmoid()(out)
 
         out = layers.BPLayer(input_shape=2, units=1, weight_init=Inintializers.xavier)(out)
         out = layers.Sigmoid()(out)
@@ -21,18 +19,18 @@ if __name__ == '__main__':
     model = get_model() 
     model.optimizer = optimizers.SGD(learning_rate=0.1)
 
-    lossFunction = lossFunctions.MSE()
+    lossFunction = lossFunctions.BinaryCrossEntropy()
 
     x = [[0, 0], [0, 1], [1, 0], [1, 1]]
     y = [[0], [1], [1], [0]]
 
-    for _ in range(30000):
+    for _ in range(20000):
         y_hat = model.predict(x)
         loss = lossFunction.forwardProp(y_hat=y_hat, y=y)
         print(loss)
 
-        dLoss = lossFunction.backProb()
-        model.update_on_batch(x, dLoss)
+        dLoss = lossFunction.backProp()
+        model.update_on_batch(dLoss)
 
     print(model.predict([[0, 1]]))
     print(model.predict([[1, 1]]))

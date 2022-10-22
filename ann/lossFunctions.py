@@ -4,29 +4,28 @@ import numpy as np
 
 class LossFunctionFrame(metaclass=ABCMeta):
     @abstractmethod
-
     def forwardProp(self, y_hat, y):
         pass
 
     @abstractmethod
-    def backProb(self):
+    def backProp(self):
         pass
 
 class MSE(LossFunctionFrame):
     def __init__(self):
-        self._rec_err = None
+        self.__rec_err = None
 
     def forwardProp(self, y_hat, y):
         err = np.subtract(y_hat, y)
         loss = np.square(err)
         loss = np.mean(loss)
 
-        self._rec_err = err
+        self.__rec_err = err
         return loss
 
-    def backProb(self):
-        batch_by_class = np.prod(self._rec_err.shape) #batch size * class num
-        dloss = (2 / batch_by_class) * self._rec_err
+    def backProp(self):
+        batch_by_class = np.prod(self.__rec_err.shape) #batch size * class num
+        dloss = (2 / batch_by_class) * self.__rec_err
         
         #<Batch x class로 나누는 이유에 대해>
         '''
@@ -35,3 +34,30 @@ class MSE(LossFunctionFrame):
         해당 연산이 없는 경우, 동일한 미분값을 얻기위해서는 각 ΔW를 배치 크기로 나누어주어야 하는 번거로움이 있다. 
         '''
         return dloss
+
+class BinaryCrossEntropy(LossFunctionFrame):
+    def __init__(self):
+        self.__rec_y_hat = None
+        self.__rec_y = None
+
+    def forwardProp(self, y_hat, y):
+        one_loss = y * np.log(y_hat)
+        zero_loss = np.subtract(1., y) * np.log(np.subtract(1., y_hat))
+
+        loss = -1. * (one_loss + zero_loss)
+        loss = np.mean(loss)
+
+        self.__rec_y_hat = y_hat
+        self.__rec_y = y
+        return loss
+
+    def backProp(self):
+        batch_by_class = np.prod(self.__rec_y_hat.shape) #batch size * class num
+
+        d_one_loss = -1. * (self.__rec_y / self.__rec_y_hat)
+        d_zero_loss = np.subtract(1., self.__rec_y) / np.subtract(1., self.__rec_y_hat)
+        
+        dLoss = d_one_loss + d_zero_loss
+
+        dLoss /= batch_by_class
+        return dLoss

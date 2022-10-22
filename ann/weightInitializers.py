@@ -1,7 +1,5 @@
 import numpy as np
 
-from abc import abstractmethod, ABCMeta
-
 class Inintializers:
     @staticmethod
     def randomUniform(*args):
@@ -13,12 +11,11 @@ class Inintializers:
 
     @staticmethod
     def xavier(*args):
-        # n_in = args[0] #perceptron num of previous layer
         return np.random.randn(*args) * np.sqrt(2. / np.sum(args))
 
     @staticmethod
     def He(*args):
-        n_in = args[0] #perceptron num of previous layer
+        n_in = args[0]
         return np.random.randn(*args) * np.sqrt(2. / n_in)
 
     

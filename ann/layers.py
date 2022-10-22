@@ -3,6 +3,7 @@ from ann.weightInitializers import Inintializers
 
 import numpy as np
 
+
 class LayerFrame(metaclass=ABCMeta):
     def __init__(self):
         self._HAVE_WEIGHT = False
@@ -23,7 +24,7 @@ class LayerFrame(metaclass=ABCMeta):
         pass
 
     @abstractmethod
-    def backProb(self, dy):
+    def backProp(self, dy):
         pass
 
 class InputLayer(LayerFrame):
@@ -37,7 +38,7 @@ class InputLayer(LayerFrame):
             raise
         return x
 
-    def backProb(self, dy):
+    def backProp(self, dy):
         return dy
 
 class BPLayer(LayerFrame):
@@ -61,7 +62,7 @@ class BPLayer(LayerFrame):
         self.__rec_x = x
         return h
 
-    def backProb(self, dy):
+    def backProp(self, dy):
         dx = np.dot(dy, self.W.T)
 
         #<Affine Method>
@@ -92,7 +93,7 @@ class Sigmoid(LayerFrame):
         self.__rec_o = o
         return o
 
-    def backProb(self, dy):
+    def backProp(self, dy):
         do = self.__rec_o * (1 - self.__rec_o)
         return dy * do
 
@@ -106,6 +107,22 @@ class ReLU(LayerFrame):
         self.__rec_x = x
         return np.maximum(0., x)
 
-    def backProb(self, dy):
+    def backProp(self, dy):
         do = (self.__rec_x > 0.) * 1.
+        return dy * do
+
+class LeakyReLU(LayerFrame):
+    def __init__(self, alpha=0.3):
+        super().__init__()
+        self.alpha = alpha
+
+        self.__rec_x = None
+
+    def forwardProp(self, x):
+        self.__rec_x = x
+        return np.maximum(self.alpha * x, x)
+    
+    def backProp(self, dy):
+        do = (self.__rec_x <= 0.) * 1.
+        do = do * (self.alpha - 1.) + 1.
         return dy * do
