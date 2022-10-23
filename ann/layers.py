@@ -1,8 +1,11 @@
 from abc import abstractmethod, ABCMeta
-from ann.weightInitializers import Inintializers
 
 import numpy as np
 
+if __name__ == '__main__':
+    from weightInitializers import Inintializers
+else:
+    from ann.weightInitializers import Inintializers
 
 class LayerFrame(metaclass=ABCMeta):
     def __init__(self):
@@ -126,3 +129,30 @@ class LeakyReLU(LayerFrame):
         do = (self.__rec_x <= 0.) * 1.
         do = do * (self.alpha - 1.) + 1.
         return dy * do
+
+class Softmax(LayerFrame):
+    def __init__(self):
+        pass
+
+    def forwardProp(self, x):
+        exp_i = np.exp(x)
+        exp_sum = np.sum(exp_i, axis=1)
+        
+        print(exp_i)
+        print(exp_sum)
+        print(exp_i / exp_sum)
+        
+        
+
+    def backProp(self, dy):
+        pass
+
+
+if __name__ == '__main__':
+    o = np.array([
+        [0.2, 0.8, -0.3],
+        [0.7, -0.5, 0.5]
+    ])
+
+    soft = Softmax()
+    soft.forwardProp(x=o)
