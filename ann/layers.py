@@ -140,7 +140,7 @@ class Softmax(LayerFrame):
         
         print(exp_i)
         print(exp_sum)
-        print(exp_i / exp_sum)
+        # print(exp_i / exp_sum)
         
         
 
