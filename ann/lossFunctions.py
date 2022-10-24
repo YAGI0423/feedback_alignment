@@ -61,3 +61,26 @@ class BinaryCrossEntropy(LossFunctionFrame):
 
         dLoss /= batch_by_class
         return dLoss
+
+class CrossEntropy(LossFunctionFrame):
+    def __init__(self):
+        self.__rec_y_hat = None
+        self.__rec_y = None
+
+    def forwardProp(self, y_hat, y):
+        y_hat += 1e-7
+
+        loss = y * np.log(y_hat)
+        loss = np.sum(loss, axis=1)
+        loss = -1. * np.mean(loss)
+
+        self.__rec_y_hat = y_hat
+        self.__rec_y = y
+        return loss
+
+    def backProp(self):
+        batch = self.__rec_y_hat.shape[0]
+        
+        dLoss = -1. * self.__rec_y / self.__rec_y_hat
+        dLoss /= batch
+        return dLoss

@@ -10,7 +10,7 @@ class Inintializers:
         return np.random.randn(*args)
 
     @staticmethod
-    def xavier(*args):
+    def Xavier(*args):
         return np.random.randn(*args) * np.sqrt(2. / np.sum(args))
 
     @staticmethod
