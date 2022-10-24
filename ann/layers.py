@@ -132,27 +132,46 @@ class LeakyReLU(LayerFrame):
 
 class Softmax(LayerFrame):
     def __init__(self):
-        pass
+        self.__rec_softmax = None
 
     def forwardProp(self, x):
-        exp_i = np.exp(x)
-        exp_sum = np.sum(exp_i, axis=1)
+        max_ = np.max(x)
+        exp_i = np.exp(x - max_)
+        exp_sum = np.sum(exp_i, axis=1, keepdims=True)
+        softmax = exp_i / exp_sum
         
-        print(exp_i)
-        print(exp_sum)
-        # print(exp_i / exp_sum)
-        
-        
+        self.__rec_softmax = softmax
+        return softmax
 
     def backProp(self, dy):
-        pass
+        batch_size, class_size = self.__rec_softmax.shape
+        I = np.eye(class_size)
+        I = np.expand_dims(I, axis=0)
+        I = np.repeat(I, batch_size, axis=0)
+        
+        soft = np.expand_dims(self.__rec_softmax, axis=1)
+        softT = np.expand_dims(self.__rec_softmax, axis=2)
+
+        dSoftmax = np.matmul(soft, I - softT)
+        dSoftmax = np.squeeze(dSoftmax, axis=1)
+        return dSoftmax
+
+
 
 
 if __name__ == '__main__':
     o = np.array([
         [0.2, 0.8, -0.3],
-        [0.7, -0.5, 0.5]
+        [0.7, -0.3, 0.1]
     ])
 
+    dy = np.ones(shape=(2, 3), dtype=np.float32)
+
+
     soft = Softmax()
-    soft.forwardProp(x=o)
+    forward = soft.forwardProp(x=o)
+    back = soft.backProp(dy=dy)
+
+    print(forward)
+    print(back)
+    
