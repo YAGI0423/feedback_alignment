@@ -80,7 +80,7 @@ class CrossEntropy(LossFunctionFrame):
 
     def backProp(self):
         batch = self.__rec_y_hat.shape[0]
-        
-        dLoss = -1. * self.__rec_y / self.__rec_y_hat
+
+        dLoss = -1. * np.divide(self.__rec_y, self.__rec_y_hat)
         dLoss /= batch
         return dLoss

@@ -6,11 +6,11 @@ from ann import optimizers
 
 if __name__ == '__main__':
     def get_model():
-        inputs = layers.InputLayer(shape=(1, ))
-        out = layers.BPLayer(input_shape=1, units=1, weight_init=Inintializers.Xavier)(inputs)
+        inputs = layers.InputLayer(shape=(2, ))
+        out = layers.BPLayer(input_shape=2, units=1, weight_init=Inintializers.Xavier)(inputs)
         out = layers.Sigmoid()(out)
 
-        out = layers.BPLayer(input_shape=1, units=2, weight_init=Inintializers.Xavier)(out)
+        out = layers.BPLayer(input_shape=1, units=4, weight_init=Inintializers.Xavier)(out)
         out = layers.Softmax()(out)
 
         model = models.Model(inputs=inputs, outputs=out)
@@ -19,12 +19,12 @@ if __name__ == '__main__':
     model = get_model()
     model.optimizer = optimizers.SGD(learning_rate=0.1)
 
-    lossFunction = lossFunctions.BinaryCrossEntropy()
+    lossFunction = lossFunctions.CrossEntropy()
 
-    x = [[0], [1]]
-    y = [[1, 0], [0, 1]]
+    x = [[0, 0], [0, 1], [1, 0], [1, 1]]
+    y = [[1, 0, 0, 0], [0, 1, 0, 0], [0, 0, 1, 0], [0, 0, 0, 1]]
 
-    for _ in range(700):
+    for _ in range(30000):
         y_hat = model.predict(x)
         loss = lossFunction.forwardProp(y_hat=y_hat, y=y)
         print(loss)
@@ -32,7 +32,7 @@ if __name__ == '__main__':
         dLoss = lossFunction.backProp()
         model.update_on_batch(dLoss)
 
-    print(model.predict([[1]]))
+    print(model.predict([[1, 1]]).round(2))
     # print(model.predict([[1, 1]]))
     
     # lay = model.input_layer
