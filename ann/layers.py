@@ -155,23 +155,4 @@ class Softmax(LayerFrame):
         dSoftmax = np.matmul(soft, I - softT)
         dSoftmax = np.squeeze(dSoftmax, axis=1)
         return dSoftmax
-
-
-
-
-if __name__ == '__main__':
-    o = np.array([
-        [0.2, 0.8, -0.3],
-        [0.7, -0.3, 0.1]
-    ])
-
-    dy = np.ones(shape=(2, 3), dtype=np.float32)
-
-
-    soft = Softmax()
-    forward = soft.forwardProp(x=o)
-    back = soft.backProp(dy=dy)
-
-    print(forward)
-    print(back)
     
