@@ -6,7 +6,10 @@ from ann import optimizers
 
 from mnist_dataset import datasetLoader
 
+import numpy as np
 from tqdm import tqdm
+import matplotlib.pyplot as plt
+
 
 if __name__ == '__main__':
     def get_model():
@@ -19,26 +22,42 @@ if __name__ == '__main__':
 
         model = models.Model(inputs=inputs, outputs=out)
         return model
-    
-    datasetLoader = datasetLoader.Loader()
 
-    (x_train, y_train), (x_test, y_test) = datasetLoader.loadDataset(batch_size=16, is_normalize=True)
+    def train_model(x, y, model, loss_function,shuffle: bool=False):
+        batch_size = len(x)
+        dataset_iter = tqdm(zip(x, y), total=batch_size)
+
+        losses = []
+        for x, y in dataset_iter:
+            y_hat = model.predict(x=x)
+            loss = loss_function.forwardProp(y_hat=y_hat, y=y)
+
+            dLoss = lossFunction.backProp()
+            model.update_on_batch(dLoss)
+
+            dataset_iter.set_description(f'Loss: {loss:.5f}')
+            losses.append(loss)
+        return losses
+        
+
+    datset = datasetLoader.Loader(is_normalize=True)
+
+    train_x, train_y = datset.loadTrainDataset(batch_size=32, is_shuffle=True)
+    test_x, test_y = datset.loadTestDataset(batch_size=8, is_shuffle=False)
     
     model = get_model()
 
-    model.optimizer = optimizers.SGD(learning_rate=0.01)
+    model.optimizer = optimizers.SGD(learning_rate=0.001)
     lossFunction = lossFunctions.SparseCrossEntropy(class_num=10)
 
-    dataset_iter = tqdm(zip(x_train, y_train), total=x_train.shape[0])
-    for x, y in dataset_iter: 
-        y_hat = model.predict(x=x)
-        loss = lossFunction.forwardProp(y_hat=y_hat, y=y)
+    losses = train_model(x=train_x, y=train_y, model=model, loss_function=lossFunction)
 
-        dLoss = lossFunction.backProp()
-        model.update_on_batch(dLoss)
-
-        dataset_iter.set_description(f'Loss: {loss:.5f}')
+        
     
+    
+
+    plt.plot(losses)
+    plt.show()
     exit()
 
     
