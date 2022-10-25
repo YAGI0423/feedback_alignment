@@ -11,9 +11,21 @@ if __name__ == '__main__':
     with open('./mnist_dataset/mnist_dataset.pk', 'rb') as fr:
         mnist_dataset = pickle.load(fr)
 
-    print(mnist_dataset)
+    x_train, y_train = mnist_dataset['x_train'], mnist_dataset['y_train']
+    x_test, y_test = mnist_dataset['x_test'], mnist_dataset['y_test']
 
+    def split_dataset(x, batch_size):
+        dataset_size = x.shape[0]
+        split_size = int(dataset_size / batch_size)
+        return np.array_split(x, split_size)
 
+    
+    BATCH_SIZE = 32
+
+    x_train, y_train = split_dataset(x_train, BATCH_SIZE), split_dataset(y_train, BATCH_SIZE)
+    x_test, y_test = split_dataset(x_test, BATCH_SIZE), split_dataset(y_test, BATCH_SIZE)
+    
+    print(x_test[-1].shape)
     exit()
 
     def get_model():

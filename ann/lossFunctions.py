@@ -84,3 +84,13 @@ class CrossEntropy(LossFunctionFrame):
         dLoss = -1. * np.divide(self.__rec_y, self.__rec_y_hat)
         dLoss /= batch
         return dLoss
+
+class SparseCrossEntropy(LossFunctionFrame):
+    def __init__(self):
+        pass
+
+    def forwardProp(self, y_hat, y):
+        pass
+
+    def backProp(self):
+        pass
