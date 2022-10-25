@@ -62,7 +62,7 @@ class BPLayer(LayerFrame):
         xW = np.matmul(x, self.W)
         h = xW + self.b
 
-        self.__rec_x = x
+        self.__rec_x = x.copy()
         return h
 
     def backProp(self, dy):
@@ -107,7 +107,7 @@ class ReLU(LayerFrame):
         self.__rec_x = None
 
     def forwardProp(self, x):
-        self.__rec_x = x
+        self.__rec_x = x.copy()
         return np.maximum(0., x)
 
     def backProp(self, dy):
@@ -122,7 +122,7 @@ class LeakyReLU(LayerFrame):
         self.__rec_x = None
 
     def forwardProp(self, x):
-        self.__rec_x = x
+        self.__rec_x = x.copy()
         return np.maximum(self.alpha * x, x)
     
     def backProp(self, dy):

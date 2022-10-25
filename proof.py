@@ -4,29 +4,45 @@ from ann import models
 from ann import lossFunctions
 from ann import optimizers
 
+from mnist_dataset import datasetLoader
+
+from tqdm import tqdm
+
 if __name__ == '__main__':
-    import numpy as np
-    import pickle
+    def get_model():
+        inputs = layers.InputLayer(shape=(784, ))
+        out = layers.BPLayer(input_shape=784, units=1000, weight_init=Inintializers.He)(inputs)
+        out = layers.ReLU()(out)
 
-    with open('./mnist_dataset/mnist_dataset.pk', 'rb') as fr:
-        mnist_dataset = pickle.load(fr)
+        out = layers.BPLayer(input_shape=1000, units=10, weight_init=Inintializers.Xavier)(out)
+        out = layers.Softmax()(out)
 
-    x_train, y_train = mnist_dataset['x_train'], mnist_dataset['y_train']
-    x_test, y_test = mnist_dataset['x_test'], mnist_dataset['y_test']
-
-    def split_dataset(x, batch_size):
-        dataset_size = x.shape[0]
-        split_size = int(dataset_size / batch_size)
-        return np.array_split(x, split_size)
-
+        model = models.Model(inputs=inputs, outputs=out)
+        return model
     
-    BATCH_SIZE = 32
+    datasetLoader = datasetLoader.Loader()
 
-    x_train, y_train = split_dataset(x_train, BATCH_SIZE), split_dataset(y_train, BATCH_SIZE)
-    x_test, y_test = split_dataset(x_test, BATCH_SIZE), split_dataset(y_test, BATCH_SIZE)
+    (x_train, y_train), (x_test, y_test) = datasetLoader.loadDataset(batch_size=16, is_normalize=True)
     
-    print(x_test[-1].shape)
+    model = get_model()
+
+    model.optimizer = optimizers.SGD(learning_rate=0.01)
+    lossFunction = lossFunctions.SparseCrossEntropy(class_num=10)
+
+    dataset_iter = tqdm(zip(x_train, y_train), total=x_train.shape[0])
+    for x, y in dataset_iter: 
+        y_hat = model.predict(x=x)
+        loss = lossFunction.forwardProp(y_hat=y_hat, y=y)
+
+        dLoss = lossFunction.backProp()
+        model.update_on_batch(dLoss)
+
+        dataset_iter.set_description(f'Loss: {loss:.5f}')
+    
     exit()
+
+    
+    
 
     def get_model():
         inputs = layers.InputLayer(shape=(2, ))

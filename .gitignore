@@ -129,4 +129,4 @@ dmypy.json
 .pyre/
 
 #personal
-/mnist_dataset/
+/mnist_dataset/mnist_dataset.pk
