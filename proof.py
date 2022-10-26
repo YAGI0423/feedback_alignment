@@ -1,67 +1,19 @@
-from ann import layers
-from ann.weightInitializers import Inintializers
-from ann import models
 from ann import lossFunctions
 from ann import optimizers
+from ann import validateModels
 
 from mnist_dataset import datasetLoader
 
-from tqdm import tqdm
 import matplotlib.pyplot as plt
 
+def pltDefaultSetting(plt, title: str, ticks, labels):
+    title_args ={'fontsize': 13, 'fontweight': 'bold'}
 
-from abc import abstractmethod, ABCMeta
-class ModelFrame(metaclass=ABCMeta):
-    @abstractmethod
-    def create_model(self):
-        pass
+    plt.title(title, fontdict=title_args, loc='left', pad=10)
 
-    def train(self, x, y):
-        batch_size = len(x)
-        dataset_iter = tqdm(zip(x, y), total=batch_size)
-
-        losses = []
-        for x, y in dataset_iter:
-            y_hat = self.model.predict(x=x)
-            loss = self.lossF.forwardProp(y_hat=y_hat, y=y)
-
-            dLoss = self.lossF.backProp()
-            self.model.update_on_batch(dLoss)
-
-            dataset_iter.set_description(f'Loss: {loss:.5f}')
-            losses.append(loss)
-        return losses
-
-    def inference(self, x, y):
-        batch_size = len(x)
-        dataset_iter = tqdm(zip(x, y), total=batch_size)
-        
-        losses = []
-        for x, y in dataset_iter:
-            y_hat = self.model.predict(x=x)
-            loss = self.lossF.forwardProp(y_hat=y_hat, y=y)
-
-            dataset_iter.set_description(f'Loss: {loss:.5f}')
-            losses.append(loss)
-        return losses
-
-class BPmodel(ModelFrame):
-    def __init__(self, optimizer, lossFunction):
-        self.model = self.create_model()
-        self.model.optimizer = optimizer
-        self.lossF = lossFunction
-
-    def create_model(self):
-        inputs = layers.InputLayer(shape=(784, ))
-        out = layers.BPLayer(input_shape=784, units=1000, weight_init=Inintializers.Xavier)(inputs)
-        out = layers.Sigmoid()(out)
-
-        out = layers.BPLayer(input_shape=1000, units=10, weight_init=Inintializers.Xavier)(out)
-        out = layers.Softmax()(out)
-
-        model = models.Model(inputs=inputs, outputs=out)
-        return model
-
+    plt.xticks(ticks=ticks, labels=labels)
+    plt.tick_params(axis='x', direction='in')
+    plt.tick_params(axis='y', direction='in')
 
 if __name__ == '__main__':
     dataset = datasetLoader.Loader(is_normalize=True)
@@ -70,7 +22,7 @@ if __name__ == '__main__':
     optimizer = optimizers.SGD(learning_rate=0.001)
     lossFunction = lossFunctions.SparseCrossEntropy(class_num=10)
 
-    model = BPmodel(optimizer=optimizer, lossFunction=lossFunction)
+    model = validateModels.BPmodel(optimizer=optimizer, lossFunction=lossFunction)
 
     EPOCH = 10
     BATCH_SIZE = 64
@@ -90,17 +42,6 @@ if __name__ == '__main__':
         total_train_losses.extend(train_losses)
         test_loss_epoch.append(test_loss)
 
-
-    def pltDefaultSetting(plt, title: str, ticks, labels):
-        title_args ={'fontsize': 13, 'fontweight': 'bold'}
-
-        plt.title(title, fontdict=title_args, loc='left', pad=10)
-
-        plt.xticks(ticks=ticks, labels=labels)
-        plt.tick_params(axis='x', direction='in')
-        plt.tick_params(axis='y', direction='in')
-
-    
 
     plt.figure(figsize=(7, 9))
     plt.subplots_adjust(left=0.125, bottom=0.1, right=0.9, top=0.925, wspace=0.1, hspace=0.3)
