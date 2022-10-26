@@ -31,9 +31,8 @@ class Loader:
         if is_shuffle:
             x, y = self.__shuffle_dataset(x=x, y=y)
 
-        if batch_size >= 2:
-            x = self.__split_dataset(x=x, batch_size=batch_size)
-            y = self.__split_dataset(x=y, batch_size=batch_size)
+        x = self.__split_dataset(x=x, batch_size=batch_size)
+        y = self.__split_dataset(x=y, batch_size=batch_size)
         return x, y
 
     def loadTestDataset(self, batch_size: int=1, is_shuffle: bool=False):
@@ -41,10 +40,9 @@ class Loader:
 
         if is_shuffle:
             x, y = self.__shuffle_dataset(x=x, y=y)
-
-        if batch_size >= 2:
-            x = self.__split_dataset(x=x, batch_size=batch_size)
-            y = self.__split_dataset(x=y, batch_size=batch_size)
+        
+        x = self.__split_dataset(x=x, batch_size=batch_size)
+        y = self.__split_dataset(x=y, batch_size=batch_size)
         return x, y
 
     def __sparse_to_oneHot(self, y):
