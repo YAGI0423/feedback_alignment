@@ -24,6 +24,8 @@ if __name__ == '__main__':
 
     model = validateModels.FAmodel(optimizer=optimizer, lossFunction=lossFunction)
 
+
+
     EPOCH = 10
     BATCH_SIZE = 64
 
@@ -42,6 +44,9 @@ if __name__ == '__main__':
         total_train_losses.extend(train_losses)
         test_loss_epoch.append(test_loss)
 
+    import historyVisualizer
+    historyVisualizer.visualize({}, {})
+    exit()
 
     plt.figure(figsize=(7, 9))
     plt.subplots_adjust(left=0.125, bottom=0.1, right=0.9, top=0.925, wspace=0.1, hspace=0.3)
