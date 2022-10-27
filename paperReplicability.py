@@ -22,7 +22,7 @@ if __name__ == '__main__':
     optimizer = optimizers.SGD(learning_rate=0.001)
     lossFunction = lossFunctions.SparseCrossEntropy(class_num=10)
 
-    model = validateModels.BPmodel(optimizer=optimizer, lossFunction=lossFunction)
+    model = validateModels.FAmodel(optimizer=optimizer, lossFunction=lossFunction)
 
     EPOCH = 10
     BATCH_SIZE = 64

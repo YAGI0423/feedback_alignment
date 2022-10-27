@@ -56,3 +56,20 @@ class BPmodel(ModelFrame):
 
         model = models.Model(inputs=inputs, outputs=out)
         return model
+
+class FAmodel(ModelFrame):
+    def __init__(self, optimizer, lossFunction):
+        self.model = self.create_model()
+        self.model.optimizer = optimizer
+        self.lossF = lossFunction
+
+    def create_model(self):
+        inputs = layers.InputLayer(shape=(784, ))
+        out = layers.FALayer(input_shape=784, units=1000, weight_init=Inintializers.Xavier)(inputs)
+        out = layers.Sigmoid()(out)
+
+        out = layers.FALayer(input_shape=1000, units=10, weight_init=Inintializers.Xavier)(out)
+        out = layers.Softmax()(out)
+
+        model = models.Model(inputs=inputs, outputs=out)
+        return model

@@ -85,6 +85,49 @@ class BPLayer(LayerFrame):
         self.dW = np.multiply(dy, self.__rec_x)
         return dx
 
+class FALayer(LayerFrame):
+    def __init__(self, input_shape, units, weight_init=Inintializers.randomUniform):
+        super().__init__()
+        self._HAVE_WEIGHT = True
+        self.weight_initializer = weight_init
+
+        self.__rec_x = None
+
+        self.B = np.random.randn(units, input_shape)
+
+        self.W = self.weight_initializer(input_shape, units)
+        self.b = np.full((units, ), 0.01, dtype=np.float64)
+
+        self.dW = None
+        self.db = None
+
+    def forwardProp(self, x):
+        xW = np.matmul(x, self.W)
+        h = xW + self.b
+
+        self.__rec_x = x.copy()
+        return h
+
+    def backProp(self, dy):
+        dx = np.dot(dy, self.B)
+
+        #<Affine Method>
+        self.db = dy.sum(axis=0)
+        
+        xT = np.transpose(self.__rec_x)
+        self.dW = np.dot(xT, dy)
+        return dx
+
+        #<Personal Method>
+        '''
+        보편적인 방법에 해당하는 『Affine Method』의 경우,
+        배치 별 가중치 미분 값을 합하여 출력한다.
+        『Personal Methd』의 경우 배치에 따른 가중치를 그대로 출력한다.
+        '''
+        self.db = dy
+        self.dW = np.multiply(dy, self.__rec_x)
+        return dx
+
 class Sigmoid(LayerFrame):
     def __init__(self):
         super().__init__()
