@@ -215,8 +215,4 @@ class Softmax(LayerFrame):
         dSoftmax = soft * (I - softT)
         dSoftmax = np.matmul(dy, dSoftmax)
         dSoftmax = np.squeeze(dSoftmax, axis=1)
-<<<<<<< HEAD
-        return dy * dSoftmax
-=======
         return dSoftmax
->>>>>>> 1669a9fb49a32c82f2efb5d380a4282b26c861aa
