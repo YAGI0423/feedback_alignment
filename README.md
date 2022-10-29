@@ -12,6 +12,7 @@
 + 프로젝트 기간: 2022-06-27 ~ (진행 중)
 ***
 
+<br>
 
 ***
 + 해당 프로젝트는 Timothy P. Lillicrap 외 3인의 「Random feedback weights support learning in deep neural networks」(2014)을 바탕으로 하고 있습니다.
