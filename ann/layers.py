@@ -100,6 +100,20 @@ class Sigmoid(LayerFrame):
         do = self.__rec_o * (1 - self.__rec_o)
         return dy * do
 
+class Tanh(LayerFrame):
+    def __init__(self):
+        super().__init__()
+        self.__rec_o = None
+
+    def forwardProp(self, x):
+        o = (np.exp(x) - np.exp(-x)) / (np.exp(x) + np.exp(-x))
+
+        self.__rec_o = o
+        return o
+
+    def backProp(self, dy):
+        return dy * (1 - self.__rec_o ** 2) 
+
 class ReLU(LayerFrame):
     def __init__(self):
         super().__init__()
@@ -154,5 +168,4 @@ class Softmax(LayerFrame):
 
         dSoftmax = np.matmul(soft, I - softT)
         dSoftmax = np.squeeze(dSoftmax, axis=1)
-        return dSoftmax
-    
+        return dy * dSoftmax
