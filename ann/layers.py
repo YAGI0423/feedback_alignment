@@ -62,11 +62,54 @@ class BPLayer(LayerFrame):
         xW = np.matmul(x, self.W)
         h = xW + self.b
 
-        self.__rec_x = x
+        self.__rec_x = x.copy()
         return h
 
     def backProp(self, dy):
         dx = np.dot(dy, self.W.T)
+
+        #<Affine Method>
+        self.db = dy.sum(axis=0)
+        
+        xT = np.transpose(self.__rec_x)
+        self.dW = np.dot(xT, dy)
+        return dx
+
+        #<Personal Method>
+        '''
+        보편적인 방법에 해당하는 『Affine Method』의 경우,
+        배치 별 가중치 미분 값을 합하여 출력한다.
+        『Personal Methd』의 경우 배치에 따른 가중치를 그대로 출력한다.
+        '''
+        self.db = dy
+        self.dW = np.multiply(dy, self.__rec_x)
+        return dx
+
+class FALayer(LayerFrame):
+    def __init__(self, input_shape, units, weight_init=Inintializers.randomUniform):
+        super().__init__()
+        self._HAVE_WEIGHT = True
+        self.weight_initializer = weight_init
+
+        self.__rec_x = None
+
+        self.B = np.random.randn(units, input_shape)
+
+        self.W = self.weight_initializer(input_shape, units)
+        self.b = np.full((units, ), 0.01, dtype=np.float64)
+
+        self.dW = None
+        self.db = None
+
+    def forwardProp(self, x):
+        xW = np.matmul(x, self.W)
+        h = xW + self.b
+
+        self.__rec_x = x.copy()
+        return h
+
+    def backProp(self, dy):
+        dx = np.dot(dy, self.B)
 
         #<Affine Method>
         self.db = dy.sum(axis=0)
@@ -121,7 +164,7 @@ class ReLU(LayerFrame):
         self.__rec_x = None
 
     def forwardProp(self, x):
-        self.__rec_x = x
+        self.__rec_x = x.copy()
         return np.maximum(0., x)
 
     def backProp(self, dy):
@@ -136,7 +179,7 @@ class LeakyReLU(LayerFrame):
         self.__rec_x = None
 
     def forwardProp(self, x):
-        self.__rec_x = x
+        self.__rec_x = x.copy()
         return np.maximum(self.alpha * x, x)
     
     def backProp(self, dy):
@@ -146,6 +189,7 @@ class LeakyReLU(LayerFrame):
 
 class Softmax(LayerFrame):
     def __init__(self):
+        super().__init__()
         self.__rec_softmax = None
 
     def forwardProp(self, x):
@@ -159,13 +203,20 @@ class Softmax(LayerFrame):
 
     def backProp(self, dy):
         batch_size, class_size = self.__rec_softmax.shape
-        I = np.eye(class_size)
-        I = np.expand_dims(I, axis=0)
-        I = np.repeat(I, batch_size, axis=0)
-        
+
+        dy = np.expand_dims(dy, axis=1)
         soft = np.expand_dims(self.__rec_softmax, axis=1)
         softT = np.expand_dims(self.__rec_softmax, axis=2)
 
-        dSoftmax = np.matmul(soft, I - softT)
+        I = np.eye(class_size)
+        I = np.expand_dims(I, axis=0)
+        I = np.repeat(I, batch_size, axis=0)
+
+        dSoftmax = soft * (I - softT)
+        dSoftmax = np.matmul(dy, dSoftmax)
         dSoftmax = np.squeeze(dSoftmax, axis=1)
+<<<<<<< HEAD
         return dy * dSoftmax
+=======
+        return dSoftmax
+>>>>>>> 1669a9fb49a32c82f2efb5d380a4282b26c861aa
