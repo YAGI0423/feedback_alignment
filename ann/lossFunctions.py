@@ -64,25 +64,6 @@ class BinaryCrossEntropy(LossFunctionFrame):
 
 class CrossEntropy(LossFunctionFrame):
     def __init__(self):
-<<<<<<< HEAD
-        pass
-
-    def forwardProp(self, y_hat, y):
-        pass
-
-    def backProp(self):
-        pass
-
-class SparseCrossEntropy(LossFunctionFrame):
-    def __init__(self):
-        pass
-
-    def forwardProp(self, y_hat, y):
-        pass
-
-    def backProp(self):
-        pass
-=======
         self.__rec_y_hat = None
         self.__rec_y = None
 
@@ -118,4 +99,3 @@ class SparseCrossEntropy(LossFunctionFrame):
     def _sparse_to_oneHot(self, y):
         y = y.reshape(-1)
         return np.eye(self.class_num)[y]
->>>>>>> 1669a9fb49a32c82f2efb5d380a4282b26c861aa
