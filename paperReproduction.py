@@ -2,7 +2,7 @@ from ann import lossFunctions
 from ann import optimizers
 from ann import validateModels
 
-from mnist_dataset import datasetLoader
+from datasets import mnist
 
 import historyVisualizer
 
@@ -28,10 +28,10 @@ def trainModel(model, dataset, epoch: int, batch_size: int):
 
 
 if __name__ == '__main__':
-    EPOCH = 10
+    EPOCH = 5
     BATCH_SIZE = 64
 
-    dataset = datasetLoader.Loader(is_normalize=True)
+    dataset = mnist.Loader(is_normalize=True)
     test_x, test_y = dataset.loadTestDataset(batch_size=1, is_shuffle=False)
 
     optimizer = optimizers.SGD(learning_rate=0.001)
