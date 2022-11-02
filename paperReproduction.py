@@ -28,7 +28,7 @@ def trainModel(model, dataset, epoch: int, batch_size: int):
 
 
 if __name__ == '__main__':
-    EPOCH = 5
+    EPOCH = 10
     BATCH_SIZE = 64
 
     dataset = mnist.Loader(is_normalize=True)
