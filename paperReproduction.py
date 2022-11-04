@@ -2,7 +2,7 @@ from ann import lossFunctions
 from ann import optimizers
 from ann import validateModels
 
-from datasets import mnist
+from datasets import loader
 
 import historyVisualizer
 
@@ -31,7 +31,7 @@ if __name__ == '__main__':
     EPOCH = 5
     BATCH_SIZE = 64
 
-    dataset = mnist.Loader(is_normalize=True)
+    dataset = loader.Mnist(is_normalize=True)
     test_x, test_y = dataset.loadTestDataset(batch_size=1, is_shuffle=False)
 
     optimizer = optimizers.SGD(learning_rate=0.001)

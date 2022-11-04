@@ -1,9 +1,36 @@
-from datasets.loaderFrame import LoaderFrame
+from abc import abstractmethod, ABCMeta
 
 import pickle
 import numpy as np
 
-class Loader(LoaderFrame):
+class LoaderFrame:
+    @abstractmethod
+    def loadTrainDataset(self, batch_size: int=1, is_shuffle: bool=False):
+        pass
+
+    @abstractmethod
+    def loadTestDataset(self, batch_size: int=1, is_shuffle: bool=False):
+        pass
+
+    def _shuffle_dataset(self, x, y):
+        dataset_size = x.shape[0]
+
+        shuffle_idx = list(range(dataset_size))
+        np.random.shuffle(shuffle_idx)
+        return x[shuffle_idx], y[shuffle_idx]
+
+    def _split_dataset(self, x, batch_size):
+        dataset_size = x.shape[0]
+
+        split_size = int(dataset_size / batch_size)
+        x = np.array_split(x, split_size)
+        return x
+
+class TaskOneLinear(LoaderFrame):
+    def __init__(self):
+        pass
+
+class Mnist(LoaderFrame):
     def __init__(
         self,
         is_normalize: bool=False,
