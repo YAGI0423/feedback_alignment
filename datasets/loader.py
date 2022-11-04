@@ -43,7 +43,10 @@ class LoaderFrame:
         y = self._split_dataset(x=y, batch_size=batch_size)
         return x, y
 
-class TaskOneLinear(LoaderFrame):
+class LinearFunctionApproximation(LoaderFrame):
+    '''
+    Task (1) 'Linear function approximation'에 해당하는 데이터셋
+    '''
     def __init__(self, input_shape, output_shape, train_dataset_size):
         (self._x_train, self._y_train), (self._x_test, self._y_test) = \
             self._readDataset(input_shape, output_shape, train_dataset_size)
@@ -63,6 +66,9 @@ class TaskOneLinear(LoaderFrame):
         return (x_train, y_train), (x_test, y_test)
 
 class Mnist(LoaderFrame):
+    '''
+    Task (2) 'MNIST dataset'에 해당하는 데이터셋
+    '''
     def __init__(
         self,
         is_normalize: bool=False,
@@ -98,10 +104,3 @@ class Mnist(LoaderFrame):
             x_test = self.__normalize(x_test)
 
         return (x_train, y_train), (x_test, y_test)
-
-    
-
-if __name__ == '__main__':
-    test = TaskOneLinear(input_shape=30, output_shape=10, train_dataset_size=2000)
-    train_x, train_y = test.loadTrainDataset(batch_size=5, is_shuffle=True)
-    
