@@ -5,11 +5,8 @@ import numpy as np
 
 class LoaderFrame:
     @abstractmethod
-    def loadTrainDataset(self, batch_size: int=1, is_shuffle: bool=False):
-        pass
-
-    @abstractmethod
-    def loadTestDataset(self, batch_size: int=1, is_shuffle: bool=False):
+    def _readDataset(self):
+        # 인스턴스 생성 시, 데이터셋 생성 또는 불러오기
         pass
 
     def _shuffle_dataset(self, x, y):
@@ -26,9 +23,44 @@ class LoaderFrame:
         x = np.array_split(x, split_size)
         return x
 
+    def loadTrainDataset(self, batch_size: int=1, is_shuffle: bool=False):
+        x, y = self._x_train.copy(), self._y_train.copy()
+
+        if is_shuffle:
+            x, y = self._shuffle_dataset(x=x, y=y)
+
+        x = self._split_dataset(x=x, batch_size=batch_size)
+        y = self._split_dataset(x=y, batch_size=batch_size)
+        return x, y
+
+    def loadTestDataset(self, batch_size: int=1, is_shuffle: bool=False):
+        x, y = self._x_test.copy(), self._y_test.copy()
+
+        if is_shuffle:
+            x, y = self._shuffle_dataset(x=x, y=y)
+        
+        x = self._split_dataset(x=x, batch_size=batch_size)
+        y = self._split_dataset(x=y, batch_size=batch_size)
+        return x, y
+
 class TaskOneLinear(LoaderFrame):
-    def __init__(self):
-        pass
+    def __init__(self, input_shape, output_shape, train_dataset_size):
+        (self._x_train, self._y_train), (self._x_test, self._y_test) = \
+            self._readDataset(input_shape, output_shape, train_dataset_size)
+
+    def _readDataset(self, input_shape, output_shape, train_dataset_size):
+        total_dataset = int(train_dataset_size * 1.25)
+        X = np.random.normal(
+            loc=0, #mean
+            scale=train_dataset_size, #deviation distribution
+            size=(total_dataset, input_shape)
+        )
+        T = np.random.rand(input_shape, output_shape)
+        Y = np.matmul(X, T)
+
+        x_train, x_test = X[:train_dataset_size], X[train_dataset_size:]
+        y_train, y_test = Y[:train_dataset_size], Y[train_dataset_size:]
+        return (x_train, y_train), (x_test, y_test)
 
 class Mnist(LoaderFrame):
     def __init__(
@@ -37,8 +69,8 @@ class Mnist(LoaderFrame):
         is_one_hot: bool=False,
         path: str='./datasets/mnist_dataset.pk'):
 
-        (self.__x_train, self.__y_train), (self.__x_test, self.__y_test) = \
-            self.__readDataset(path=path, is_normalize=is_normalize, is_one_hot=is_one_hot)
+        (self._x_train, self._y_train), (self._x_test, self._y_test) = \
+            self._readDataset(path=path, is_normalize=is_normalize, is_one_hot=is_one_hot)
     
     def __sparse_to_oneHot(self, y):
         y = y.reshape(-1)
@@ -50,7 +82,7 @@ class Mnist(LoaderFrame):
         '''
         return 2. * (x / 255.) - 1
 
-    def __readDataset(self, path: str, is_normalize: bool=False, is_one_hot: bool=False):
+    def _readDataset(self, path: str, is_normalize: bool=False, is_one_hot: bool=False):
         with open(path, 'rb') as fr:
             mnist_dataset = pickle.load(fr)
 
@@ -67,22 +99,9 @@ class Mnist(LoaderFrame):
 
         return (x_train, y_train), (x_test, y_test)
 
-    def loadTrainDataset(self, batch_size: int=1, is_shuffle: bool=False):
-        x, y = self.__x_train.copy(), self.__y_train.copy()
+    
 
-        if is_shuffle:
-            x, y = self._shuffle_dataset(x=x, y=y)
-
-        x = self._split_dataset(x=x, batch_size=batch_size)
-        y = self._split_dataset(x=y, batch_size=batch_size)
-        return x, y
-
-    def loadTestDataset(self, batch_size: int=1, is_shuffle: bool=False):
-        x, y = self.__x_test.copy(), self.__y_test.copy()
-
-        if is_shuffle:
-            x, y = self._shuffle_dataset(x=x, y=y)
-        
-        x = self._split_dataset(x=x, batch_size=batch_size)
-        y = self._split_dataset(x=y, batch_size=batch_size)
-        return x, y
+if __name__ == '__main__':
+    test = TaskOneLinear(input_shape=30, output_shape=10, train_dataset_size=2000)
+    train_x, train_y = test.loadTrainDataset(batch_size=5, is_shuffle=True)
+    
