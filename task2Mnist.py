@@ -1,6 +1,9 @@
+from ann import layers
+from ann.weightInitializers import Inintializers
+from ann import models
+
 from ann import lossFunctions
 from ann import optimizers
-from ann import validateModels
 
 from datasets import loader
 
@@ -31,6 +34,32 @@ if __name__ == '__main__':
     EPOCH = 10
     BATCH_SIZE = 128 #64
 
+
+
+
+    def create_BP_net():
+        inputs = layers.InputLayer(shape=(784, ))
+        out = layers.BPLayer(input_shape=784, units=1000, weight_init=Inintializers.Xavier)(inputs)
+        out = layers.Sigmoid()(out)
+
+        out = layers.BPLayer(input_shape=1000, units=10, weight_init=Inintializers.Xavier)(out)
+        out = layers.Softmax()(out)
+
+        model = models.Model(inputs=inputs, outputs=out)
+        return model
+
+    def create_FA_net():
+        inputs = layers.InputLayer(shape=(784, ))
+        out = layers.FALayer(input_shape=784, units=1000, weight_init=Inintializers.Xavier)(inputs)
+        out = layers.Sigmoid()(out)
+
+        out = layers.FALayer(input_shape=1000, units=10, weight_init=Inintializers.Xavier)(out)
+        out = layers.Softmax()(out)
+
+        model = models.Model(inputs=inputs, outputs=out)
+        return model
+
+
     dataset = loader.Mnist(is_normalize=True, is_one_hot=True)
     test_x, test_y = dataset.loadTestDataset(batch_size=1, is_shuffle=False)
 
@@ -39,8 +68,11 @@ if __name__ == '__main__':
     lossFunction = lossFunctions.SE()
     # lossFunction = lossFunctions.CrossEntropy()
 
-    bp_model = validateModels.BPmodel(optimizer=optimizer, lossFunction=lossFunction)
-    fa_model = validateModels.FAmodel(optimizer=optimizer, lossFunction=lossFunction)
+    bp_model = create_BP_net()
+    fa_model = create_FA_net()
+
+    bp_model.compile(lossFunction=lossFunction, optimizer=optimizer)
+    fa_model.compile(lossFunction=lossFunction, optimizer=optimizer)
 
     bp_train_his, bp_test_his = trainModel(model=bp_model, dataset=dataset, epoch=EPOCH, batch_size=BATCH_SIZE)
     fa_train_his, fa_test_his = trainModel(model=fa_model, dataset=dataset, epoch=EPOCH, batch_size=BATCH_SIZE)
@@ -50,5 +82,3 @@ if __name__ == '__main__':
         test_losses={'BP': bp_test_his, 'FA': fa_test_his},
         epoch=EPOCH
     )
-
-    

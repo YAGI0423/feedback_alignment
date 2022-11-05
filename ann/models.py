@@ -1,10 +1,16 @@
+from tqdm import tqdm
+
 class Model:
     def __init__(self, inputs, outputs):
         self.input_layer = inputs
         self.output_layer = outputs
 
-        self.lossF = None
+        self.lossFunction = None
         self.optimizer = None
+    
+    def compile(self, lossFunction, optimizer):
+        self.lossFunction = lossFunction
+        self.optimizer = optimizer
 
     def predict(self, x):
         flow_layer = self.input_layer
@@ -29,3 +35,32 @@ class Model:
                     gradient=flow_layer.db
                 )
             flow_layer = flow_layer.parentLayer
+
+    def train(self, x, y):
+        batch_size = len(x)
+        dataset_iter = tqdm(zip(x, y), total=batch_size)
+
+        losses = []
+        for x, y in dataset_iter:
+            y_hat = self.predict(x=x)
+            loss = self.lossFunction.forwardProp(y_hat=y_hat, y=y)
+
+            dLoss = self.lossFunction.backProp()
+            self.update_on_batch(dLoss)
+
+            dataset_iter.set_description(f'Loss: {loss:.5f}')
+            losses.append(loss)
+        return losses
+
+    def inference(self, x, y):
+        batch_size = len(x)
+        dataset_iter = tqdm(zip(x, y), total=batch_size)
+        
+        losses = []
+        for x, y in dataset_iter:
+            y_hat = self.predict(x=x)
+            loss = self.lossFunction.forwardProp(y_hat=y_hat, y=y)
+
+            dataset_iter.set_description(f'Loss: {loss:.5f}')
+            losses.append(loss)
+        return losses
