@@ -93,8 +93,9 @@ class Mnist(LoaderFrame):
             self._readDataset(path=path, is_normalize=is_normalize, is_one_hot=is_one_hot)
     
     def __sparse_to_oneHot(self, y):
+        CLASS_NUM = 10
         y = y.reshape(-1)
-        return np.eye(self.class_num)[y]
+        return np.eye(CLASS_NUM)[y]
 
     def __normalize(self, x):
         '''

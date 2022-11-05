@@ -45,4 +45,5 @@ def visualize(train_losses: dict, test_losses: dict, epoch: int):
     __pltDefaultSetting(plt, title='<Loss on Test Set>', ticks=ticks, labels=labels)
     #End=====================================
 
+    plt.savefig('./fig1.png')
     plt.show()

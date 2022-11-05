@@ -3,6 +3,7 @@ class Model:
         self.input_layer = inputs
         self.output_layer = outputs
 
+        self.lossF = None
         self.optimizer = None
 
     def predict(self, x):

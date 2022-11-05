@@ -28,21 +28,19 @@ def trainModel(model, dataset, epoch: int, batch_size: int):
 
 
 if __name__ == '__main__':
-    dataset = loader.NonlinearFunctionApproximation(input_shape=30, output_shape=10, train_dataset_size=10)
-    exit()
+    EPOCH = 10
+    BATCH_SIZE = 128 #64
 
-    EPOCH = 5
-    BATCH_SIZE = 64
-
-    dataset = loader.Mnist(is_normalize=True)
+    dataset = loader.Mnist(is_normalize=True, is_one_hot=True)
     test_x, test_y = dataset.loadTestDataset(batch_size=1, is_shuffle=False)
 
     optimizer = optimizers.SGD(learning_rate=0.001)
-    lossFunction = lossFunctions.SparseCrossEntropy(class_num=10)
+    # lossFunction = lossFunctions.SparseCrossEntropy(class_num=10)
+    lossFunction = lossFunctions.SE()
+    # lossFunction = lossFunctions.CrossEntropy()
 
     bp_model = validateModels.BPmodel(optimizer=optimizer, lossFunction=lossFunction)
     fa_model = validateModels.FAmodel(optimizer=optimizer, lossFunction=lossFunction)
-
 
     bp_train_his, bp_test_his = trainModel(model=bp_model, dataset=dataset, epoch=EPOCH, batch_size=BATCH_SIZE)
     fa_train_his, fa_test_his = trainModel(model=fa_model, dataset=dataset, epoch=EPOCH, batch_size=BATCH_SIZE)

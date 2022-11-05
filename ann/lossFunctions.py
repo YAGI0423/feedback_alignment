@@ -11,6 +11,24 @@ class LossFunctionFrame(metaclass=ABCMeta):
     def backProp(self):
         pass
 
+class SE(LossFunctionFrame):
+    def __init__(self):
+        self.__rec_err = None
+
+    def forwardProp(self, y_hat, y):
+        err = np.subtract(y_hat, y)
+        loss = np.square(err)
+        loss = np.sum(loss)
+        loss = np.divide(loss, 2)
+
+        self.__rec_err = err
+        return loss
+
+    def backProp(self):
+        batch_by_class = np.prod(self.__rec_err.shape) #batch size * class num
+        dloss = (1 / batch_by_class) * self.__rec_err
+        return dloss
+
 class MSE(LossFunctionFrame):
     def __init__(self):
         self.__rec_err = None

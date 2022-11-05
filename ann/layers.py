@@ -93,7 +93,8 @@ class FALayer(LayerFrame):
 
         self.__rec_x = None
 
-        self.B = np.random.randn(units, input_shape)
+        #Task (1), (3): 𝐵는 균일 분포 [−0.5, 0.5]에서 추출된다(Methods Summary 참조).
+        self.B = np.random.uniform(-0.5, 0.5, size=(units, input_shape))
 
         self.W = self.weight_initializer(input_shape, units)
         self.b = np.full((units, ), 0.01, dtype=np.float64)
