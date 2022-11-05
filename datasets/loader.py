@@ -3,7 +3,7 @@ from abc import abstractmethod, ABCMeta
 import pickle
 import numpy as np
 
-class LoaderFrame:
+class LoaderFrame(metaclass=ABCMeta):
     @abstractmethod
     def _readDataset(self):
         # 인스턴스 생성 시, 데이터셋 생성 또는 불러오기
@@ -46,8 +46,13 @@ class LoaderFrame:
 class LinearFunctionApproximation(LoaderFrame):
     '''
     Task (1) 'Linear function approximation'에 해당하는 데이터셋
+
+    목표 선형 함수 𝑇는 30차원 공간의 벡터를 10차원으로 매핑하였다.
+    𝑇의 요소는 무작위로, [−1, 1] 범위로부터 균일하게 추출되었다.
+    데이터셋 𝐷 = {(𝑥1, 𝑦1), ⋯ (𝑥𝑁, 𝑦𝑁)}는 𝑥𝑖 ~ 𝑁(𝜇 = 0, ∑ = 𝐼)인,𝑦𝑖 = 𝑇𝑥𝑖에 따라 생성되었다.
+    (Full Methods 참조)
     '''
-    def __init__(self, input_shape, output_shape, train_dataset_size):
+    def __init__(self, train_dataset_size, input_shape=30, output_shape=10):
         (self._x_train, self._y_train), (self._x_test, self._y_test) = \
             self._readDataset(input_shape, output_shape, train_dataset_size)
 
@@ -58,7 +63,7 @@ class LinearFunctionApproximation(LoaderFrame):
             scale=train_dataset_size, #deviation distribution
             size=(total_dataset, input_shape)
         )
-        T = np.random.rand(input_shape, output_shape)
+        T = np.random.rand(input_shape, output_shape) * 2 - 1
         Y = np.matmul(X, T)
 
         x_train, x_test = X[:train_dataset_size], X[train_dataset_size:]
@@ -68,6 +73,15 @@ class LinearFunctionApproximation(LoaderFrame):
 class Mnist(LoaderFrame):
     '''
     Task (2) 'MNIST dataset'에 해당하는 데이터셋
+
+    네트워크는 0-9의 필기 숫자 이미지를 분류하도록 학습되었다.
+    표준 원-핫 표현은 원하는(desired) 출력을 코딩하는 데 사용되었다.
+
+    네트워크는 기본 MNIST 데이터셋[17] 60,000개의 이미지로 학습되었다.
+    그리고 성능은 10,000개의 이미지 테스트 셋에서 발생한 오차의 백분율로 측정되었다.
+    (Methods Summary 참조)
+
+    ※ MNIST dataset은 제공하지 않는다 ※
     '''
     def __init__(
         self,
@@ -103,4 +117,30 @@ class Mnist(LoaderFrame):
             x_train = self.__normalize(x_train)
             x_test = self.__normalize(x_test)
 
+        return (x_train, y_train), (x_test, y_test)
+
+class NonlinearFunctionApproximation(LoaderFrame):
+    '''
+    Task (3) 'Noninear function approximation'에 해당하는 데이터셋
+
+    데이터셋 𝐷 = {(𝑥1, 𝑦1), ⋯ (𝑥𝑁, 𝑦𝑁)}는 𝑥𝑖 ~ 𝑁(𝜇 = 0, ∑ = 𝐼)인, 𝑦𝑖 = 𝑇(𝑥𝑖)에 따라 생성되었다.
+    '''
+    def __init__(self, train_dataset_size, input_shape=30, output_shape=10):
+        (self._x_train, self._y_train), (self._x_test, self._y_test) = \
+            self._readDataset(input_shape, output_shape, train_dataset_size)
+
+    def _readDataset(self, input_shape, output_shape, train_dataset_size):
+        from datasets import thirdTaskTargetNet
+        T = thirdTaskTargetNet.getNetwork(input_shape=input_shape, output_shape=output_shape)
+
+        total_dataset = int(train_dataset_size * 1.25)
+        X = np.random.normal(
+            loc=0, #mean
+            scale=train_dataset_size, #deviation distribution
+            size=(total_dataset, input_shape)
+        )
+        Y = T.predict(x=X)
+
+        x_train, x_test = X[:train_dataset_size], X[train_dataset_size:]
+        y_train, y_test = Y[:train_dataset_size], Y[train_dataset_size:]
         return (x_train, y_train), (x_test, y_test)

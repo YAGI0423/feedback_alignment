@@ -28,6 +28,9 @@ def trainModel(model, dataset, epoch: int, batch_size: int):
 
 
 if __name__ == '__main__':
+    dataset = loader.NonlinearFunctionApproximation(input_shape=30, output_shape=10, train_dataset_size=10)
+    exit()
+
     EPOCH = 5
     BATCH_SIZE = 64
 
