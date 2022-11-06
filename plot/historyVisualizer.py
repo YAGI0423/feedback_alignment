@@ -10,7 +10,7 @@ def __pltDefaultSetting(plt, title: str, ticks, labels):
     plt.tick_params(axis='x', direction='in')
     plt.tick_params(axis='y', direction='in')
 
-def visualize(train_losses: dict, test_losses: dict, epoch: int):
+def visualize(path: str, train_losses: dict, test_losses: dict, epoch: int):
     COLOR_LIST = ['#000000', '#00AF00']
 
     plt.figure(figsize=(7, 9))
@@ -47,5 +47,5 @@ def visualize(train_losses: dict, test_losses: dict, epoch: int):
     plt.xlabel('Epochs')
     #End=====================================
 
-    plt.savefig('./plot/images/task2_mnist_dataset.png')
+    plt.savefig(path)
     plt.show()

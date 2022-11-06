@@ -52,19 +52,31 @@ class LinearFunctionApproximation(LoaderFrame):
     데이터셋 𝐷 = {(𝑥1, 𝑦1), ⋯ (𝑥𝑁, 𝑦𝑁)}는 𝑥𝑖 ~ 𝑁(𝜇 = 0, ∑ = 𝐼)인,𝑦𝑖 = 𝑇𝑥𝑖에 따라 생성되었다.
     (Full Methods 참조)
     '''
-    def __init__(self, train_dataset_size, input_shape=30, output_shape=10):
+    def __init__(self, train_dataset_size, input_shape=30, output_shape=10, is_normalize: bool=False):
         (self._x_train, self._y_train), (self._x_test, self._y_test) = \
-            self._readDataset(input_shape, output_shape, train_dataset_size)
+            self._readDataset(input_shape, output_shape, train_dataset_size, is_normalize)
 
-    def _readDataset(self, input_shape, output_shape, train_dataset_size):
+    def __normalize(self, x):
+        '''
+        데이터셋을 -1. ~ +1. 사이의 값으로 정규화하여 반환
+        '''
+        min, max = np.min(x), np.max(x)
+        normalized = (x - min) / (max - min)
+        return 2. * normalized - 1
+
+    def _readDataset(self, input_shape, output_shape, train_dataset_size, is_normalize):
         total_dataset = int(train_dataset_size * 1.25)
         X = np.random.normal(
-            loc=0, #mean
+            loc=0., #mean
             scale=train_dataset_size, #deviation distribution
             size=(total_dataset, input_shape)
         )
-        T = np.random.rand(input_shape, output_shape) * 2 - 1
+        T = np.random.uniform(-1., 1., size=(input_shape, output_shape))
         Y = np.matmul(X, T)
+
+        if is_normalize:
+            X = self.__normalize(X)
+            Y = self.__normalize(Y)
 
         x_train, x_test = X[:train_dataset_size], X[train_dataset_size:]
         y_train, y_test = Y[:train_dataset_size], Y[train_dataset_size:]

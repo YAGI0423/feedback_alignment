@@ -15,7 +15,7 @@ from plot import historyVisualizer
 
 from tqdm import tqdm
 
-class TaskOneModel(Model):
+class TaskTwoModel(Model):
     '''
     ann.models.Model 클래스를 상속받아
     논문의 Task (2)에 적합한 메소드를 추가하여 재정의한 Model 생성 클래스
@@ -102,7 +102,7 @@ def create_network(affine_type: str='BP'):
     out = AffineLayer(input_shape=1000, units=10, weight_init=Inintializers.TaskInit)(out)
     out = layers.Sigmoid()(out)
 
-    model = TaskOneModel(inputs=inputs, outputs=out)
+    model = TaskTwoModel(inputs=inputs, outputs=out)
     return model
 
 
@@ -112,7 +112,6 @@ if __name__ == '__main__':
     LEARNING_RATE = 0.001
 
     dataset = loader.Mnist(is_normalize=True, is_one_hot=True)
-    test_x, test_y = dataset.loadTestDataset(batch_size=1, is_shuffle=False)
 
     bp_model = create_network(affine_type='BP')
     fa_model = create_network(affine_type='FA')
@@ -124,6 +123,7 @@ if __name__ == '__main__':
     fa_train_his, fa_test_his = fa_model.update_network(dataset=dataset, epoch=EPOCH, batch_size=BATCH_SIZE)
     
     historyVisualizer.visualize(
+        path='./plot/images/task2_mnistDataset.png',
         train_losses={'BP': bp_train_his, 'FA': fa_train_his},
         test_losses={'BP': bp_test_his, 'FA': fa_test_his},
         epoch=EPOCH
