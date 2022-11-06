@@ -7,7 +7,7 @@ from ann import optimizers
 
 from datasets import loader
 
-import historyVisualizer
+from plot import historyVisualizer
 
 from tqdm import tqdm
 
