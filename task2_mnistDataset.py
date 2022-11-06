@@ -103,7 +103,7 @@ def create_network(affine_type: str='BP'):
 
 
 if __name__ == '__main__':
-    EPOCH = 20
+    EPOCH = 5
     BATCH_SIZE = 64
     LEARNING_RATE = 0.001
 
