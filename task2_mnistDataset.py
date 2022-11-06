@@ -1,12 +1,16 @@
+#<Network builder>
 from ann import layers
 from ann.weightInitializers import Inintializers
 from ann.models import Model
 
+#<Network compile>
 from ann import lossFunctions
 from ann import optimizers
 
+#<Dataset>
 from datasets import loader
 
+#<Visualizer>
 from plot import historyVisualizer
 
 from tqdm import tqdm
@@ -103,8 +107,8 @@ def create_network(affine_type: str='BP'):
 
 
 if __name__ == '__main__':
-    EPOCH = 5
-    BATCH_SIZE = 64
+    EPOCH = 20
+    BATCH_SIZE = 32
     LEARNING_RATE = 0.001
 
     dataset = loader.Mnist(is_normalize=True, is_one_hot=True)
@@ -113,8 +117,8 @@ if __name__ == '__main__':
     bp_model = create_network(affine_type='BP')
     fa_model = create_network(affine_type='FA')
 
-    bp_model.compile(lossFunction=lossFunctions.MSE(), optimizer=optimizers.SGD(learning_rate=LEARNING_RATE))
-    fa_model.compile(lossFunction=lossFunctions.MSE(), optimizer=optimizers.SGD(learning_rate=LEARNING_RATE))
+    bp_model.compile(lossFunction=lossFunctions.SE(), optimizer=optimizers.SGD(learning_rate=LEARNING_RATE))
+    fa_model.compile(lossFunction=lossFunctions.SE(), optimizer=optimizers.SGD(learning_rate=LEARNING_RATE))
 
     bp_train_his, bp_test_his = bp_model.update_network(dataset=dataset, epoch=EPOCH, batch_size=BATCH_SIZE)
     fa_train_his, fa_test_his = fa_model.update_network(dataset=dataset, epoch=EPOCH, batch_size=BATCH_SIZE)
