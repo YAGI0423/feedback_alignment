@@ -43,7 +43,9 @@ def visualize(train_losses: dict, test_losses: dict, epoch: int):
     labels[0] = 1
 
     __pltDefaultSetting(plt, title='<Loss on Test Set>', ticks=ticks, labels=labels)
+
+    plt.xlabel('Epochs')
     #End=====================================
 
-    plt.savefig('./fig1.png')
+    plt.savefig('.figures/task2_mnist_dataset.png')
     plt.show()
