@@ -15,6 +15,8 @@ from plot import historyVisualizer
 
 from tqdm import tqdm
 
+import numpy as np
+
 class TaskOneModel(Model):
     '''
     ann.models.Model 클래스를 상속받아
@@ -23,21 +25,27 @@ class TaskOneModel(Model):
     def update_on_epoch(self, x, y):
         '''
         배치 단위로 구분된 데이터셋 쌍 x, y를 입력받아,
-        네트워크 epoch 1회 갱신 후, loss 리스트 반환
+        네트워크 epoch 1회 갱신 후, loss 리스트 및 Δh_BP 또는 Δh_FA 리스트 반환
         '''
         dataset_iter = tqdm(zip(x, y), total=len(x))
 
-        losses = []
+        losses, dhs = [], [] #dhs: Δh list
         for x, y in dataset_iter:
             y_hat = self.predict(x=x)
             loss = self.lossFunction.forwardProp(y_hat=y_hat, y=y)
 
             dLoss = self.lossFunction.backProp()
-            self.update_on_batch(dLoss)
 
+            #Δh_BP = transpose(W)·e, Δh_FA = B·e
+            dh = self.output_layer.backProp(dy=dLoss)
+
+            self.update_on_batch(dLoss)
             dataset_iter.set_description(f'Loss: {loss:.5f}')
+            dh = np.mean(dh, axis=0)
+
             losses.append(loss)
-        return losses
+            dhs.append(dh)
+        return losses, dhs
 
     def inference(self, x, y):
         '''
@@ -64,11 +72,12 @@ class TaskOneModel(Model):
 
         total_train_losses = []
         total_test_losses = []
+        total_dh_list = []
         for e in range(epoch):
             print(f'EPOCH ({e+1}/{epoch})')
             train_x, train_y = dataset.loadTrainDataset(batch_size=batch_size, is_shuffle=True)
 
-            train_losses = self.update_on_epoch(x=train_x, y=train_y)
+            train_losses, dhs = self.update_on_epoch(x=train_x, y=train_y)
             test_losses = self.inference(x=test_x, y=test_y)
             print()
 
@@ -76,7 +85,8 @@ class TaskOneModel(Model):
 
             total_train_losses.extend(train_losses)
             total_test_losses.append(test_loss)
-        return total_train_losses, total_test_losses
+            total_dh_list.extend(dhs)
+        return total_train_losses, total_test_losses, total_dh_list
 
 def create_network(affine_type: str='BP'):
     '''
@@ -100,9 +110,9 @@ def create_network(affine_type: str='BP'):
     return model
 
 if __name__ == '__main__':
-    EPOCH = 100
-    BATCH_SIZE = 64
-    LEARNING_RATE = 0.001
+    EPOCH = 2
+    BATCH_SIZE = 8
+    LEARNING_RATE = 0.005
 
     dataset = loader.LinearFunctionApproximation(train_dataset_size=25000, input_shape=30, output_shape=10, is_normalize=True)
 
@@ -112,12 +122,15 @@ if __name__ == '__main__':
     bp_model.compile(lossFunction=lossFunctions.SE(), optimizer=optimizers.SGD(learning_rate=LEARNING_RATE))
     fa_model.compile(lossFunction=lossFunctions.SE(), optimizer=optimizers.SGD(learning_rate=LEARNING_RATE))
 
-    bp_train_his, bp_test_his = bp_model.update_network(dataset=dataset, epoch=EPOCH, batch_size=BATCH_SIZE)
-    fa_train_his, fa_test_his = fa_model.update_network(dataset=dataset, epoch=EPOCH, batch_size=BATCH_SIZE)
+    bp_train_his, bp_test_his, h_BPs = bp_model.update_network(dataset=dataset, epoch=EPOCH, batch_size=BATCH_SIZE)
+    fa_train_his, fa_test_his, h_FAs = fa_model.update_network(dataset=dataset, epoch=EPOCH, batch_size=BATCH_SIZE)
+
+    print(h_BPs)
+    exit()
     
     historyVisualizer.visualize(
         path='./plot/images/task1_linearFunction.png',
         train_losses={'BP': bp_train_his, 'FA': fa_train_his},
         test_losses={'BP': bp_test_his, 'FA': fa_test_his},
-        epoch=EPOCH
+        epoch=EPOCH, tick_step=100
     )

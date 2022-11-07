@@ -126,5 +126,5 @@ if __name__ == '__main__':
         path='./plot/images/task2_mnistDataset.png',
         train_losses={'BP': bp_train_his, 'FA': fa_train_his},
         test_losses={'BP': bp_test_his, 'FA': fa_test_his},
-        epoch=EPOCH
+        epoch=EPOCH, tick_step=5
     )
