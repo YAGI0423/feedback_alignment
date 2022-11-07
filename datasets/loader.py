@@ -138,11 +138,11 @@ class NonlinearFunctionApproximation(LoaderFrame):
 
     데이터셋 𝐷 = {(𝑥1, 𝑦1), ⋯ (𝑥𝑁, 𝑦𝑁)}는 𝑥𝑖 ~ 𝑁(𝜇 = 0, ∑ = 𝐼)인, 𝑦𝑖 = 𝑇(𝑥𝑖)에 따라 생성되었다.
     '''
-    def __init__(self, train_dataset_size, input_shape=30, output_shape=10):
+    def __init__(self, train_dataset_size, input_shape=30, output_shape=10, is_normalize: bool=False):
         (self._x_train, self._y_train), (self._x_test, self._y_test) = \
-            self._readDataset(input_shape, output_shape, train_dataset_size)
+            self._readDataset(input_shape, output_shape, train_dataset_size, is_normalize)
 
-    def _readDataset(self, input_shape, output_shape, train_dataset_size):
+    def _readDataset(self, input_shape, output_shape, train_dataset_size, is_normalize):
         from datasets import thirdTaskTargetNet
         T = thirdTaskTargetNet.getNetwork(input_shape=input_shape, output_shape=output_shape)
 
@@ -153,6 +153,10 @@ class NonlinearFunctionApproximation(LoaderFrame):
             size=(total_dataset, input_shape)
         )
         Y = T.predict(x=X)
+
+        if is_normalize:
+            X = self.__normalize(X)
+            Y = self.__normalize(Y)
 
         x_train, x_test = X[:train_dataset_size], X[train_dataset_size:]
         y_train, y_test = Y[:train_dataset_size], Y[train_dataset_size:]
