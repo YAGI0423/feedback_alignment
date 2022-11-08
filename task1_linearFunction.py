@@ -75,7 +75,7 @@ class TaskOneModel(Model):
         total_dh_list = []
         for e in range(epoch):
             print(f'EPOCH ({e+1}/{epoch})')
-            train_x, train_y = dataset.loadTrainDataset(batch_size=batch_size, is_shuffle=True)
+            train_x, train_y = dataset.loadTrainDataset(batch_size=batch_size, is_shuffle=False)
 
             train_losses, dhs = self.update_on_epoch(x=train_x, y=train_y)
             test_losses = self.inference(x=test_x, y=test_y)
@@ -119,6 +119,9 @@ if __name__ == '__main__':
     bp_model = create_network(affine_type='BP')
     fa_model = create_network(affine_type='FA')
 
+    fa_model.input_layer.childLayer.W = bp_model.input_layer.childLayer.W.copy()
+    fa_model.output_layer.W = bp_model.output_layer.W.copy()
+
     bp_model.compile(lossFunction=lossFunctions.SE(), optimizer=optimizers.SGD(learning_rate=LEARNING_RATE))
     fa_model.compile(lossFunction=lossFunctions.SE(), optimizer=optimizers.SGD(learning_rate=LEARNING_RATE))
 
@@ -127,11 +130,22 @@ if __name__ == '__main__':
 
     h_FAs, h_BPs = np.array(h_FAs, dtype=np.float64), np.array(h_BPs, dtype=np.float64)
 
+    import pickle
+    with open("./hs.pk","wb") as fw:
+        pickle.dump({'h_FAs': h_FAs, 'h_BPs': h_BPs}, fw)
+    exit()
+
     fro_norm = lambda x, axis: np.linalg.norm(x, ord=2, axis=axis)
     
-    numerator = h_FAs * h_BPs
-    numerator = np.sum(numerator, axis=1)
+  
+    # numerator = np.matmul(
+    #     np.expand_dims(h_FAs, axis=1),
+    #     np.expand_dims(h_BPs, axis=-1)
+    # )
     # numerator = fro_norm(numerator, axis=1)
+    # numerator = np.squeeze(numerator, axis=-1)
+    numerator = h_FAs * h_BPs
+    numerator = fro_norm(numerator, axis=1)
 
     denominator = fro_norm(h_FAs, axis=1) * fro_norm(h_BPs, axis=1)
     angles = numerator / denominator
