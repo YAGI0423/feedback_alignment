@@ -104,15 +104,15 @@ def create_network(affine_type: str='BP'):
         raise  Exception('\n\n\nThe parameter `affine_type` must be "BP" or "FA" in string format.\n\n')
 
     inputs = layers.InputLayer(shape=(30, ))
-    out = AffineLayer(input_shape=30, units=20, weight_init=Inintializers.TaskInit)(inputs)
-    out = AffineLayer(input_shape=20, units=10, weight_init=Inintializers.TaskInit)(out)
+    out = AffineLayer(input_shape=30, units=20, weight_init=Inintializers.Xavier)(inputs)
+    out = AffineLayer(input_shape=20, units=10, weight_init=Inintializers.Xavier)(out)
     model = TaskOneModel(inputs=inputs, outputs=out)
     return model
 
 if __name__ == '__main__':
-    EPOCH = 2
+    EPOCH = 100
     BATCH_SIZE = 8
-    LEARNING_RATE = 0.005
+    LEARNING_RATE = 0.005 #0.005
 
     dataset = loader.LinearFunctionApproximation(train_dataset_size=25000, input_shape=30, output_shape=10, is_normalize=True)
 
@@ -125,12 +125,24 @@ if __name__ == '__main__':
     bp_train_his, bp_test_his, h_BPs = bp_model.update_network(dataset=dataset, epoch=EPOCH, batch_size=BATCH_SIZE)
     fa_train_his, fa_test_his, h_FAs = fa_model.update_network(dataset=dataset, epoch=EPOCH, batch_size=BATCH_SIZE)
 
-    print(h_BPs)
-    exit()
+    h_FAs, h_BPs = np.array(h_FAs, dtype=np.float64), np.array(h_BPs, dtype=np.float64)
+
+    fro_norm = lambda x, axis: np.linalg.norm(x, ord=2, axis=axis)
     
-    historyVisualizer.visualize(
+    numerator = h_FAs * h_BPs
+    numerator = np.sum(numerator, axis=1)
+    # numerator = fro_norm(numerator, axis=1)
+
+    denominator = fro_norm(h_FAs, axis=1) * fro_norm(h_BPs, axis=1)
+    angles = numerator / denominator
+    angles = np.arccos(angles)
+    angles = np.degrees(angles)
+
+
+    historyVisualizer.firTaskVisualize(
         path='./plot/images/task1_linearFunction.png',
         train_losses={'BP': bp_train_his, 'FA': fa_train_his},
         test_losses={'BP': bp_test_his, 'FA': fa_test_his},
-        epoch=EPOCH, tick_step=100
+        angle_list=angles,
+        epoch=EPOCH, tick_step=10
     )
