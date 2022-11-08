@@ -130,3 +130,4 @@ dmypy.json
 
 #personal
 /mnist_dataset/mnist_dataset.pk
+/testField/
