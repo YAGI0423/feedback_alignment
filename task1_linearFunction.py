@@ -15,8 +15,6 @@ from plot import historyVisualizer
 
 from tqdm import tqdm
 
-import numpy as np
-
 class TaskOneModel(Model):
     '''
     ann.models.Model 클래스를 상속받아
@@ -29,23 +27,18 @@ class TaskOneModel(Model):
         '''
         dataset_iter = tqdm(zip(x, y), total=len(x))
 
-        losses, dhs = [], [] #dhs: Δh list
+        losses = []
         for x, y in dataset_iter:
             y_hat = self.predict(x=x)
             loss = self.lossFunction.forwardProp(y_hat=y_hat, y=y)
 
             dLoss = self.lossFunction.backProp()
 
-            #Δh_BP = transpose(W)·e, Δh_FA = B·e
-            dh = self.output_layer.backProp(dy=dLoss)
-
             self.update_on_batch(dLoss)
             dataset_iter.set_description(f'Loss: {loss:.5f}')
-            dh = np.mean(dh, axis=0)
 
             losses.append(loss)
-            dhs.append(dh)
-        return losses, dhs
+        return losses
 
     def inference(self, x, y):
         '''
@@ -72,12 +65,11 @@ class TaskOneModel(Model):
 
         total_train_losses = []
         total_test_losses = []
-        total_dh_list = []
         for e in range(epoch):
             print(f'EPOCH ({e+1}/{epoch})')
-            train_x, train_y = dataset.loadTrainDataset(batch_size=batch_size, is_shuffle=False)
+            train_x, train_y = dataset.loadTrainDataset(batch_size=batch_size, is_shuffle=True)
 
-            train_losses, dhs = self.update_on_epoch(x=train_x, y=train_y)
+            train_losses = self.update_on_epoch(x=train_x, y=train_y)
             test_losses = self.inference(x=test_x, y=test_y)
             print()
 
@@ -85,8 +77,7 @@ class TaskOneModel(Model):
 
             total_train_losses.extend(train_losses)
             total_test_losses.append(test_loss)
-            total_dh_list.extend(dhs)
-        return total_train_losses, total_test_losses, total_dh_list
+        return total_train_losses, total_test_losses
 
 def create_network(affine_type: str='BP'):
     '''
@@ -104,59 +95,32 @@ def create_network(affine_type: str='BP'):
         raise  Exception('\n\n\nThe parameter `affine_type` must be "BP" or "FA" in string format.\n\n')
 
     inputs = layers.InputLayer(shape=(30, ))
-    out = AffineLayer(input_shape=30, units=20, weight_init=Inintializers.Xavier)(inputs)
-    out = AffineLayer(input_shape=20, units=10, weight_init=Inintializers.Xavier)(out)
+    out = AffineLayer(input_shape=30, units=20, weight_init=Inintializers.TaskInit)(inputs)
+    out = AffineLayer(input_shape=20, units=10, weight_init=Inintializers.TaskInit)(out)
     model = TaskOneModel(inputs=inputs, outputs=out)
     return model
 
 if __name__ == '__main__':
-    EPOCH = 100
-    BATCH_SIZE = 8
-    LEARNING_RATE = 0.005 #0.005
+    EPOCH = 1000
+    BATCH_SIZE = 32
+    LEARNING_RATE = 0.001
 
-    dataset = loader.LinearFunctionApproximation(train_dataset_size=25000, input_shape=30, output_shape=10, is_normalize=True)
+    dataset = loader.LinearFunctionApproximation(train_dataset_size=2500, input_shape=30, output_shape=10, is_normalize=True)
 
     bp_model = create_network(affine_type='BP')
     fa_model = create_network(affine_type='FA')
 
-    fa_model.input_layer.childLayer.W = bp_model.input_layer.childLayer.W.copy()
-    fa_model.output_layer.W = bp_model.output_layer.W.copy()
-
     bp_model.compile(lossFunction=lossFunctions.SE(), optimizer=optimizers.SGD(learning_rate=LEARNING_RATE))
     fa_model.compile(lossFunction=lossFunctions.SE(), optimizer=optimizers.SGD(learning_rate=LEARNING_RATE))
 
-    bp_train_his, bp_test_his, h_BPs = bp_model.update_network(dataset=dataset, epoch=EPOCH, batch_size=BATCH_SIZE)
-    fa_train_his, fa_test_his, h_FAs = fa_model.update_network(dataset=dataset, epoch=EPOCH, batch_size=BATCH_SIZE)
-
-    h_FAs, h_BPs = np.array(h_FAs, dtype=np.float64), np.array(h_BPs, dtype=np.float64)
-
-    import pickle
-    with open("./hs.pk","wb") as fw:
-        pickle.dump({'h_FAs': h_FAs, 'h_BPs': h_BPs}, fw)
-    exit()
-
-    fro_norm = lambda x, axis: np.linalg.norm(x, ord=2, axis=axis)
-    
-  
-    # numerator = np.matmul(
-    #     np.expand_dims(h_FAs, axis=1),
-    #     np.expand_dims(h_BPs, axis=-1)
-    # )
-    # numerator = fro_norm(numerator, axis=1)
-    # numerator = np.squeeze(numerator, axis=-1)
-    numerator = h_FAs * h_BPs
-    numerator = fro_norm(numerator, axis=1)
-
-    denominator = fro_norm(h_FAs, axis=1) * fro_norm(h_BPs, axis=1)
-    angles = numerator / denominator
-    angles = np.arccos(angles)
-    angles = np.degrees(angles)
+    bp_train_his, bp_test_his = bp_model.update_network(dataset=dataset, epoch=EPOCH, batch_size=BATCH_SIZE)
+    fa_train_his, fa_test_his = fa_model.update_network(dataset=dataset, epoch=EPOCH, batch_size=BATCH_SIZE)
 
 
-    historyVisualizer.firTaskVisualize(
+    historyVisualizer.firSecTaskVisualize(
+        title='Task (1) Linear function approximation',
         path='./plot/images/task1_linearFunction.png',
         train_losses={'BP': bp_train_his, 'FA': fa_train_his},
         test_losses={'BP': bp_test_his, 'FA': fa_test_his},
-        angle_list=angles,
-        epoch=EPOCH, tick_step=10
+        epoch=EPOCH, tick_step=100
     )
