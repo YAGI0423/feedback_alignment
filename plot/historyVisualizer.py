@@ -31,8 +31,8 @@ def __pltTestLoss(plt, test_losses: dict, epoch: int, tick_step: int, color_list
     __pltDefaultSetting(plt, title='Loss on Test Set', ticks=ticks, labels=labels)
     
 
-def firSecTaskVisualize(path: str, title: str, train_losses: dict, test_losses: dict, epoch: int, tick_step: int):
-    LOSS_COLOR_LIST = ['#000000', '#00AF00'] #BP, FA
+def visualize(path: str, title: str, train_losses: dict, test_losses: dict, epoch: int, tick_step: int, test_Ylim: list=None):
+    LOSS_COLOR_LIST = ['#000000', '#00AF00', '#FF00FF', '#0000FF'] #BP, FA
 
     plt.figure(figsize=(14, 5.5))
     plt.suptitle(title, fontsize=15, fontweight ='bold')
@@ -46,6 +46,7 @@ def firSecTaskVisualize(path: str, title: str, train_losses: dict, test_losses: 
 
     #Test History============================
     plt.subplot(1, 2, 2)
+    plt.ylim(test_Ylim)
     __pltTestLoss(plt, test_losses=test_losses, epoch=epoch, tick_step=tick_step, color_list=LOSS_COLOR_LIST)
     plt.xlabel('Epochs')
     #End=====================================

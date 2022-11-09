@@ -23,6 +23,14 @@ class LoaderFrame(metaclass=ABCMeta):
         x = np.array_split(x, split_size)
         return x
 
+    def _normalize(self, x):
+        '''
+        데이터셋을 -1. ~ +1. 사이의 값으로 정규화하여 반환
+        '''
+        min, max = np.min(x), np.max(x)
+        normalized = (x - min) / (max - min)
+        return 2. * normalized - 1
+
     def loadTrainDataset(self, batch_size: int=1, is_shuffle: bool=False):
         x, y = self._x_train.copy(), self._y_train.copy()
 
@@ -56,14 +64,6 @@ class LinearFunctionApproximation(LoaderFrame):
         (self._x_train, self._y_train), (self._x_test, self._y_test) = \
             self._readDataset(input_shape, output_shape, train_dataset_size, is_normalize)
 
-    def __normalize(self, x):
-        '''
-        데이터셋을 -1. ~ +1. 사이의 값으로 정규화하여 반환
-        '''
-        min, max = np.min(x), np.max(x)
-        normalized = (x - min) / (max - min)
-        return 2. * normalized - 1
-
     def _readDataset(self, input_shape, output_shape, train_dataset_size, is_normalize):
         total_dataset = int(train_dataset_size * 1.25)
         X = np.random.normal(
@@ -75,8 +75,8 @@ class LinearFunctionApproximation(LoaderFrame):
         Y = np.matmul(X, T)
 
         if is_normalize:
-            X = self.__normalize(X)
-            Y = self.__normalize(Y)
+            X = self._normalize(X)
+            Y = self._normalize(Y)
 
         x_train, x_test = X[:train_dataset_size], X[train_dataset_size:]
         y_train, y_test = Y[:train_dataset_size], Y[train_dataset_size:]
@@ -109,12 +109,6 @@ class Mnist(LoaderFrame):
         y = y.reshape(-1)
         return np.eye(CLASS_NUM)[y]
 
-    def __normalize(self, x):
-        '''
-        데이터셋을 -1. ~ +1. 사이의 값으로 정규화하여 반환
-        '''
-        return 2. * (x / 255.) - 1
-
     def _readDataset(self, path: str, is_normalize: bool=False, is_one_hot: bool=False):
         with open(path, 'rb') as fr:
             mnist_dataset = pickle.load(fr)
@@ -127,8 +121,8 @@ class Mnist(LoaderFrame):
             y_test = self.__sparse_to_oneHot(y_test)
 
         if is_normalize:
-            x_train = self.__normalize(x_train)
-            x_test = self.__normalize(x_test)
+            x_train = self._normalize(x_train)
+            x_test = self._normalize(x_test)
 
         return (x_train, y_train), (x_test, y_test)
 
@@ -155,8 +149,8 @@ class NonlinearFunctionApproximation(LoaderFrame):
         Y = T.predict(x=X)
 
         if is_normalize:
-            X = self.__normalize(X)
-            Y = self.__normalize(Y)
+            X = self._normalize(X)
+            Y = self._normalize(Y)
 
         x_train, x_test = X[:train_dataset_size], X[train_dataset_size:]
         y_train, y_test = Y[:train_dataset_size], Y[train_dataset_size:]

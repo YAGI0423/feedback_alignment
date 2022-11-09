@@ -105,7 +105,7 @@ if __name__ == '__main__':
     BATCH_SIZE = 32
     LEARNING_RATE = 0.001
 
-    dataset = loader.LinearFunctionApproximation(train_dataset_size=2500, input_shape=30, output_shape=10, is_normalize=True)
+    dataset = loader.LinearFunctionApproximation(train_dataset_size=25000, input_shape=30, output_shape=10, is_normalize=True)
 
     bp_model = create_network(affine_type='BP')
     fa_model = create_network(affine_type='FA')
@@ -117,7 +117,7 @@ if __name__ == '__main__':
     fa_train_his, fa_test_his = fa_model.update_network(dataset=dataset, epoch=EPOCH, batch_size=BATCH_SIZE)
 
 
-    historyVisualizer.firSecTaskVisualize(
+    historyVisualizer.visualize(
         title='Task (1) Linear function approximation',
         path='./plot/images/task1_linearFunction.png',
         train_losses={'BP': bp_train_his, 'FA': fa_train_his},

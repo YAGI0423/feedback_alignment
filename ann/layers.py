@@ -150,7 +150,7 @@ class Tanh(LayerFrame):
         self.__rec_o = None
 
     def forwardProp(self, x):
-        o = (np.exp(x) - np.exp(-x)) / (np.exp(x) + np.exp(-x))
+        o = np.tanh(x)
 
         self.__rec_o = o
         return o

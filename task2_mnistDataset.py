@@ -122,7 +122,7 @@ if __name__ == '__main__':
     bp_train_his, bp_test_his = bp_model.update_network(dataset=dataset, epoch=EPOCH, batch_size=BATCH_SIZE)
     fa_train_his, fa_test_his = fa_model.update_network(dataset=dataset, epoch=EPOCH, batch_size=BATCH_SIZE)
     
-    historyVisualizer.firSecTaskVisualize(
+    historyVisualizer.visualize(
         title='Task (2) MNIST dataset',
         path='./plot/images/task2_mnistDataset.png',
         train_losses={'BP': bp_train_his, 'FA': fa_train_his},
