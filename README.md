@@ -31,7 +31,8 @@
 
 **Task (1) Linear function approximation**
 
-&nbsp;&nbsp; 본문
+&nbsp;&nbsp;
+본문
 
 <img src='./README_Figures/figure1_d.png' width='450'>
 
