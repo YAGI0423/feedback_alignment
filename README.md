@@ -95,20 +95,20 @@
 
 **Task (1) Linear function approximation**
 ```python
->>> python task1_linearFunction.py
+$ python task1_linearFunction.py
 ```
 <br>
 
 **Task (2) MNIST dataset**
 ```python
->>> python task2_mnistDataset.py
+$ python task2_mnistDataset.py
 ```
 
 <br>
 
 **Task (3) Nonlinear function approximation**
 ```python
->>> python task3_nonlinearFunction.py
+$ python task3_nonlinearFunction.py
 ```
 ***
 
