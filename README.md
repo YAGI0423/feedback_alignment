@@ -34,7 +34,7 @@
 &nbsp;&nbsp;
 30-20-10 선형 네트워크가 선형 함수, $T$를 근사하도록 학습한다. 입·출력 학습 쌍은 $x ~ N(μ=0, ∑=I)$으로 $y^* = Tx$를 통해 생성한다. 목표 선형 함수 $T$는 40차원 공간의 벡터를 10차원으로 매핑하였으며, $[-1, 1]$ 범위로부터 균일하게 추출하였다. 오차 역전파의 네트워크 가중치 $W_0$, $W$는 $[-0.01, 0.01]$에서 균일하게 추출하여 초기화 하였다. FA의 random feedback weight인 $B$는 균일(uniform) 분포 $[-0.5, 0.5]$에서 추출 한다. 각 알고리즘의 학습률, η는 학습 속도의 최적화를 위해 수동 탐색(manual search)을 통해 선택하였다. figure 1은 네 알고리즘의 선형 함수에 대한 손실 변화를 제시한 것으로 'shallow' 학습(옅은 회색), 강화 학습(어두운 회색), 오차 역전파(검정), 그리고 피드백 정렬(초록)이다.
 
-<br><img src='./README_Figures/figure1_d.png' width='450'>
+<br><img src='./README_Figures/figure1_d.png' height='200'>
 
 **figure 1.** Error on Test Set of Paper's Task (1) Linear function approximation
 
@@ -43,7 +43,7 @@
 &nbsp;&nbsp;
 본 프로젝트에서는 학습률을 0.001, 배치 크기는 32로 설정하였으며, Epoch은 1,000회 수행하였다. 데이터셋의 경우 입·출력 데이터 모두 *Min-Max 정규화* 전처리를 진행하였다. figure 2는 학습 및 테스트 데이터셋에 대한 오차 역전파와 FA의 선형 함수 근사의 손실 변화를 시각화한 것으로 오차 역전파(검정), FA(초록)이다.
 
-<br><img src='./README_Figures/task1_linearFunction.png' width='900'>
+<br><img src='./README_Figures/task1_linearFunction.png' height='200'>
 
 **figure 2.** Error of Project's Task (1) Linear function approximation
 
