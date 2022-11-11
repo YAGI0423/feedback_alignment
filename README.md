@@ -100,6 +100,8 @@ $ python task1_linearFunction.py
 <br>
 
 **Task (2) MNIST dataset**
+
+*MNIST 데이터셋은 첨부하지 않았으므로 `/datasets/` 경로에 별도의 데이터셋을 위치시켜야 한다.*
 ```python
 $ python task2_mnistDataset.py
 ```
