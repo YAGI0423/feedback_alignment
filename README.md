@@ -36,7 +36,7 @@
 
 <br><img src='./README_Figures/figure1_d.png' width='450'>
 
-<center><b>figure 1.</b> Error on Test Set of Paper's Task (1) Linear function approximation</center>
+**figure 1.** Error on Test Set of Paper's Task (1) Linear function approximation
 
 <br>
 
@@ -47,11 +47,12 @@
 
 **figure 2.** Error of Project's Task (1) Linear function approximation
 
-본문
-
-<br>
+<br><br>
 
 **Task (2) MNIST dataset**
+
+&nbsp;&nbsp;
+본문
 
 <br>
 
