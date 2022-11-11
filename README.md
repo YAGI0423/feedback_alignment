@@ -21,7 +21,7 @@
 ***
 <br><br>
 
-### 프로젝트 요약
+### 프로젝트 내용
 ***
 &nbsp;&nbsp;
 오차 역전파(Backpropagation of error)는 현재 가장 강력한 딥러닝 네트워크 학습 알고리즘이다. 하지만, 역전파는 뉴런이 기여하는 영향을 정확하게 계산하여 오류 신호를 하류의 뉴런에 할당하는데, 이는 생물학적으로 수용하기 어렵다. Timothy P. Lillicrap 외 3인은 역전파에서 사용하는 가중치의 전치 대신, '무작위 시냅스 가중치(random synaptic weights)'를 오류 신호와 곱하여 영향을 할당하는 Feedback Alignment 알고리즘(이하 FA)을 제시하였다. 나아가, 특정 작업에 대한 FA 알고리즘의 성능을 역전파 알고리즘과 비교하여 확인하였다. 성능 비교는 
@@ -36,9 +36,9 @@
 
 <br><img src='./README_Figures/figure1_d.png' width='450'>
 
-**figure 1.** Error on Test Set of Paper's Task (1) Linear function approximation
+<center><b>figure 1.</b> Error on Test Set of Paper's Task (1) Linear function approximation</center>
 
-<br><br>
+<br>
 
 &nbsp;&nbsp;
 본 프로젝트에서는 학습률을 0.001, 배치 크기는 32로 설정하였으며, Epoch은 1,000회 수행하였다. 데이터셋의 경우 입·출력 데이터 모두 *Min-Max 정규화* 전처리를 진행하였다. figure 2는 학습 및 테스트 데이터셋에 대한 오차 역전파와 FA의 선형 함수 근사의 손실 변화를 시각화한 것으로 오차 역전파(검정), FA(초록)이다.
