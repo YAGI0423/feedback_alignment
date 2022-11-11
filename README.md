@@ -35,7 +35,7 @@
 
 <br><img src='./README_Figures/figure1_d.png' height='250'>
 
-**figure 1.** Error on Test Set of Paper's Task (1) Linear function approximation
+**figure 1.** Error on Test Set of Paper's Task (1) Linear function approximation(Timothy P. Lillicrap et al.)
 
 <br><br>
 
@@ -54,7 +54,7 @@
 
 <br><img src='./README_Figures/figure2_a.png' height='250'>
 
-**figure 3.** Error on Test Set of Paper's Task (2) MNIST dataset
+**figure 3.** Error on Test Set of Paper's Task (2) MNIST dataset(Timothy P. Lillicrap et al.)
 
 <br><br>
 
@@ -73,7 +73,7 @@
 
 <br><img src='./README_Figures/figure2_d.png' height='250'>
 
-**figure 5.** Error on Test Set of Paper's Task (3) Nonlinear Function approximation
+**figure 5.** Error on Test Set of Paper's Task (3) Nonlinear Function approximation(Timothy P. Lillicrap et al.)
 
 <br><br>
 
