@@ -79,7 +79,7 @@
 &nbsp;&nbsp;
 본 프로젝트에서는 학습률을 0.001, 배치 크기 4로 설정하고 Epoch은 10회 수행하였다. 입·출력 데이터 모두 *Min-Max 정규화* 전처리를 진행하였다. 네트워크 가중치는 $[-0.01, 0.01]$ 범위에서 균일하게 추출하여 초기화하였다. figure 6은 비선형 함수 근사 문제에 대한 손실 곡선으로 세 층의 네트워크는 오차 역전파(검정), 그리고 피드백 정렬(초록)이며, 네 층의 네트워크는 오차 역전파(마젠타) 그리고 피드백 정렬(파랑)으로 학습되었고 학습 셋에 대한 손실은 500 이동 평균을 시각화 한 것이다.
 
-<br><img src='./README_Figures/task3_NonlinearFunction.png' height='330'>
+<br><img src='./README_Figures/task3_nonlinearFunction.png' height='330'>
 
 **figure 6.** Error of Project's Task (3) Nonlinear function approximation
 
