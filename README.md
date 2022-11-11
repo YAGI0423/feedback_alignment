@@ -5,6 +5,7 @@
 
 최종 수정일: 2022-11-10
 + 2022.11.10: 코드 작성 완료(Task 1 ~ 3)
++ 2022.11.11: README.md 작성 완료
 ***
 <br>
 
@@ -87,7 +88,28 @@
 
 ### Getting Started
 ***
-본문
+
+각 Task는 `[TASK NAME].py` 파일을 실행하여 수행할 수 있다. 네트워크 학습 및 추론이 종료 되면 `plot/images/` 경로에 시각화 이미지가 저장된다.
+
+<br>
+
+**Task (1) Linear function approximation**
+```python
+>>> python task1_linearFunction.py
+```
+<br>
+
+**Task (2) MNIST dataset**
+```python
+>>> python task2_mnistDataset.py
+```
+
+<br>
+
+**Task (3) Nonlinear function approximation**
+```python
+>>> python task3_nonlinearFunction.py
+```
 ***
 
 <br><br>

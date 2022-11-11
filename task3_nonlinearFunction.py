@@ -15,7 +15,7 @@ from plot import historyVisualizer
 
 from tqdm import tqdm
 
-class TaskOneModel(Model):
+class TaskThreeModel(Model):
     '''
     ann.models.Model 클래스를 상속받아
     논문의 Task (2)에 적합한 메소드를 추가하여 재정의한 Model 생성 클래스
@@ -104,7 +104,7 @@ def create_network(affine_type: str='BP', add_layer: bool=False):
         out = layers.Tanh()(out)
         out = AffineLayer(input_shape=10, units=10, weight_init=Inintializers.TaskInit)(out)
 
-    model = TaskOneModel(inputs=inputs, outputs=out)
+    model = TaskThreeModel(inputs=inputs, outputs=out)
     return model
 
 def moving_average(x, window=10):
