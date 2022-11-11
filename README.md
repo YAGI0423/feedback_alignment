@@ -1,5 +1,6 @@
-## 이 저장소(Repository)는 「Feedback Aligment를 이용한 신경망 학습 알고리즘 구현」에 대한 내용을 다루고 있습니다.
+### 이 저장소(Repository)는 「Feedback Aligment를 이용한 신경망 학습 알고리즘 구현」에 대한 내용을 다루고 있습니다.
 
+***
 작성자: YAGI<br>
 
 최종 수정일: 2022-11-11
@@ -85,7 +86,8 @@
 
 <br><br>
 
-## Getting Started
+### Getting Started
+***
 각 Task는 `[TASK NAME].py` 파일을 실행하여 수행할 수 있다. 네트워크 학습 및 추론이 종료 되면 `/plot/images/` 경로에 시각화 이미지가 저장된다.
 
 <br>
@@ -109,6 +111,7 @@ $ python task2_mnistDataset.py
 ```python
 $ python task3_nonlinearFunction.py
 ```
+***
 
 <br><br>
 
