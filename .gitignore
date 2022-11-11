@@ -130,4 +130,7 @@ dmypy.json
 
 #personal
 /mnist_dataset/mnist_dataset.pk
+__pycache__
 __pycache__/
+__pycache__/*
+*.pyc
