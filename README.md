@@ -41,7 +41,7 @@
 &nbsp;&nbsp;
 본 프로젝트에서는 학습률을 0.001, 배치 크기는 32로 설정하였으며, Epoch은 1,000회 수행하였다. 데이터셋의 경우 입·출력 데이터 모두 *Min-Max 정규화* 전처리를 진행하였다. figure 2는 학습 및 테스트 데이터셋에 대한 오차 역전파와 FA의 선형 함수 근사의 손실 변화를 시각화한 것으로 오차 역전파(검정), FA(초록)이다.
 
-<br><img src='./README_Figures/task1_linearFunction.png' height='300'>
+<br><img src='./README_Figures/task1_linearFunction.png' height='330'>
 
 **figure 2.** Error of Project's Task (1) Linear function approximation
 
@@ -60,7 +60,7 @@
 &nbsp;&nbsp;
 본 프로젝트에서는 배치 크기 32로 설정하고 Epoch은 20회 수행하였다. 입·출력 데이터 모두 *Min-Max 정규화* 전처리를 진행하였다. *weight decay*는 사용하지 않았다. 네트워크 가중치는 $[-0.01, 0.01]$ 범위에서 균일하게 추출하여 초기화하였다. figure 4는 MNIST 학습 및 테스트 데이터셋에 대한 오차 역전파와 FA의 선형 함수 근사의 손실 변화를 시각화한 것으로 오차 역전파(검정), FA(초록)이다.
 
-<br><img src='./README_Figures/task2_mnistDataset.png' height='300'>
+<br><img src='./README_Figures/task2_mnistDataset.png' height='330'>
 
 **figure 4.** Error of Project's Task (2) MNIST dataset
 
