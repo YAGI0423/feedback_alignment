@@ -3,7 +3,7 @@
 ***
 작성자: YAGI<br>
 
-최종 수정일: 2022-11-10
+최종 수정일: 2022-11-11
 + 2022.11.10: 코드 작성 완료(Task 1 ~ 3)
 + 2022.11.11: README.md 작성 완료
 ***
@@ -61,6 +61,8 @@
 &nbsp;&nbsp;
 본 프로젝트에서는 배치 크기 32로 설정하고 Epoch은 20회 수행하였다. 입·출력 데이터 모두 *Min-Max 정규화* 전처리를 진행하였다. *weight decay*는 사용하지 않았다. 네트워크 가중치는 $[-0.01, 0.01]$ 범위에서 균일하게 추출하여 초기화하였다. figure 4는 MNIST 학습 및 테스트 데이터셋에 대한 오차 역전파와 FA의 선형 함수 근사의 손실 변화를 시각화한 것으로 오차 역전파(검정), FA(초록)이다.
 
+<span style='color:#D40000'>**\* MNIST 데이터셋은 첨부하지 않았으므로 별도의 데이터셋을 `/datasets/` 경로에 위치시켜야 함.**</span>
+
 <br><img src='./README_Figures/task2_mnistDataset.png' height='330'>
 
 **figure 4.** Error of Project's Task (2) MNIST dataset
@@ -89,7 +91,7 @@
 ### Getting Started
 ***
 
-각 Task는 `[TASK NAME].py` 파일을 실행하여 수행할 수 있다. 네트워크 학습 및 추론이 종료 되면 `plot/images/` 경로에 시각화 이미지가 저장된다.
+각 Task는 `[TASK NAME].py` 파일을 실행하여 수행할 수 있다. 네트워크 학습 및 추론이 종료 되면 `/plot/images/` 경로에 시각화 이미지가 저장된다.
 
 <br>
 
