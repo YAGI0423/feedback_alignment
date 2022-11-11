@@ -52,9 +52,22 @@
 **Task (2) MNIST dataset**
 
 &nbsp;&nbsp;
-본문
+표준 시그모이드 은닉과 출력 유닛(즉, $σ(x) = 1/(1+exp(-x))$)의 784-1000-10 네트워크는 0-9의 필기 숫자 이미지를 분류하도록 학습되었다. 네트워크는 기본 [MNIST 데이터셋](https://yann.lecun.com/exdb/mnist/) 60,000개 이미지로 학습되었으며, 성능 측정은 10,000개의 이미지 테스트 셋을 사용하였다. 학습률은 $η = 10^{-3}$ 그리고 *weight decay*는 $α = 10^{-6}$이 사용되었다. figure 3은 10,000개의 MNIST 테스트 셋에 대한 오차 역전파(검정), FA(초록)의 손실 곡선을 제시한 것이다.
+
+<br><img src='./README_Figures/figure2_a.png' width='450'>
+
+**figure 3.** Error on Test Set of Paper's Task (2) MNIST dataset
 
 <br>
+
+&nbsp;&nbsp;
+본 프로젝트에서는 배치 크기 32로 설정하고 Epoch은 20회 수행하였다. 입·출력 데이터 모두 *Min-Max 정규화* 전처리를 진행하였다. *weight decay*는 사용하지 않았다. 네트워크 가중치는 $[-0.01, 0.01]$ 범위에서 균일하게 추출하여 초기화하였다. figure 4는 MNIST 학습 및 테스트 데이터셋에 대한 오차 역전파와 FA의 선형 함수 근사의 손실 변화를 시각화한 것으로 오차 역전파(검정), FA(초록)이다.
+
+<br><img src='./README_Figures/task2_mnistDataset.png' width='900'>
+
+**figure 4.** Error of Project's Task (2) MNIST dataset
+
+<br><br>
 
 **Task (3) Nonlinear function approximation**
 ***
