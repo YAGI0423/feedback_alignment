@@ -94,7 +94,7 @@ figure 5는 비선형 함수 근사 문제에 대한 각 평균 20회 이상 시
 
 <br><br>
 
-### Getting Started
+### Getting Start
 ***
 각 Task는 `[TASK NAME].py` 파일을 실행하여 수행할 수 있다. 네트워크 학습 및 추론이 종료 되면 `/plot/images/` 경로에 시각화 이미지가 저장된다.
 
